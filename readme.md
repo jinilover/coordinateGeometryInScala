@@ -1,5 +1,5 @@
 #Coordinate geometry problem
-This is a common coordinate geometry problem being faced in publishing.  The purpose is to find the co-ordinates of a polygon's vertices.
+This is a common coordinate geometry problem be solved in publishing.  The purpose is to find the co-ordinates of a polygon's vertices.
 
 ![Alt text](https://github.com/jinilover/images/blob/master/Polygon1.png)
 
