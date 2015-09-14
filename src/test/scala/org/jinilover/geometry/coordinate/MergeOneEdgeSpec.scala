@@ -6,13 +6,87 @@ import Geometry._
 import scala.language.postfixOps
 
 class MergeOneEdgeSpec extends FlatSpec with Matchers {
-  it should "have merge a poly with a box with 1 edge matched" in {
+  it should "have merge a poly with a box with 1 horizontal edge matched, the right is higher" in {
+    val expectedPoly = Polygon((2, 13), (6, 13), (6, 10), (12, 10), (12, 6), (6, 6), (6, 9), (2, 9))
+
     merge {
       Polygon((2, 13), (6, 13), (6, 9), (2, 9))
     } {
       Box((6, 6), (12, 10))
     } should be {
-      Some(Polygon((2, 13), (6, 13), (6, 10), (12, 10), (12, 6), (6, 6), (6, 9), (2, 9)))
+      Some(expectedPoly)
+    }
+
+    // swap the roles of the previous test case
+    merge {
+      Polygon((6, 10), (12, 10), (12, 6), (6, 6))
+    } {
+      Box((2, 9), (6, 13))
+    } should be {
+      Some(expectedPoly)
+    }
+  }
+
+  it should "have merge a poly with a box with 1 horizontal edge matched, the left is higher" in {
+    val expectedPoly = Polygon((9, 10), (13, 10), (13, 6), (9, 6), (9, 4), (5, 4), (5, 8), (9, 8))
+
+    merge {
+      Polygon((5, 8), (9, 8), (9, 4), (5, 4))
+    } {
+      Box((9, 6), (13, 10))
+    } should be {
+      Some(expectedPoly)
+    }
+
+    // swap the roles of the previous test case
+    merge {
+      Polygon((9, 10), (13, 10), (13, 6), (9, 6))
+    } {
+      Box((5, 4), (9, 8))
+    } should be {
+      Some(expectedPoly)
+    }
+  }
+
+  it should "have merge a poly with a box with 1 vertical edge matched, the top is lefter" in {
+    val expectedPoly = Polygon((5, 10), (10, 10), (10, 7), (7, 7), (7, 4), (3, 4), (3, 7), (5, 7))
+
+    merge {
+      Polygon((3, 7), (7, 7), (7, 4), (3, 4))
+    } {
+      Box((5, 7), (10, 10))
+    } should be {
+      Some(expectedPoly)
+    }
+
+    // swap the roles of the previous test case
+    merge {
+      Polygon((5, 10), (10, 10), (10, 7), (5, 7))
+    } {
+      Box((3, 4), (7, 7))
+    } should be {
+      Some(expectedPoly)
+    }
+  }
+
+  it should "have merge a poly with a box with 1 vertical edge matched, the top is righter" in {
+    val expectedPoly = Polygon((6, 10), (11, 10), (11, 7), (14, 7), (14, 4), (9, 4), (9, 7), (6, 7))
+
+    merge {
+      Polygon((9, 7), (14, 7), (14, 4), (9, 4))
+    } {
+      Box((6, 7), (11, 10))
+    } should be {
+      Some(expectedPoly)
+    }
+
+    // swap the roles of the previous test case
+    merge {
+      Polygon((6, 10), (11, 10), (11, 7), (6, 7))
+    } {
+      Box((9, 4), (14, 7))
+    } should be {
+      Some(expectedPoly)
     }
   }
 
