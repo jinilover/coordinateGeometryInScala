@@ -2,6 +2,8 @@ package org.jinilover.geometry.coordinate
 
 import scala.language.implicitConversions
 import scala.math.abs
+import com.typesafe.scalalogging._
+import org.slf4j.LoggerFactory
 
 case class Point(x: Int, y: Int)
 
@@ -11,7 +13,7 @@ case class Box(tpLeft: Point, btmRight: Point)
 
 case class Polygon(points: Point*)
 
-object Geometry {
+object Geometry extends LazyLogging {
   //  type X = Int
   //  type Y = Int
   //  type PointFP = (X, Y)
@@ -177,7 +179,7 @@ object Geometry {
           }
       }
       val edges = firstEdge :: makeEdgesContinuous(pEdges)(List(firstEdge))
-      println(s"pEdgesCounterClockWise: firstEdge = $firstEdge, edges = $edges")
+      logger.debug(s"pEdgesCounterClockWise: firstEdge = $firstEdge, edges = $edges")
       edges
     }
 
@@ -217,7 +219,7 @@ object Geometry {
           case _ => Some(edges3)
         })
       } yield edges4
-      println(s"joinByOneMatch: $edges")
+      logger.debug(s"joinByOneMatch: $edges")
       edges
     }
 
