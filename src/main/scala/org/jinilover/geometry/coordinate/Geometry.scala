@@ -201,12 +201,13 @@ object Geometry extends LazyLogging {
       (x1, x2) => if (f(x1, x2)) x1 else x2
     }
 
+  def firstLastItem[T](list: List[T]): (T, T) = 
+    (list.head, list.reverse.head)
+    
   val joinBy1or2Matches: JOIN_EDGES =
     pEdges => pMatches => bEdges => bMatches => {
-      val firstPMatch = pMatches.head
-      val lastPMatch = pMatches.reverse.head
-      val firstBMatch = bMatches.head
-      val lastBMatch = bMatches.reverse.head
+      val (firstPMatch,lastPMatch) = firstLastItem(pMatches)
+      val (firstBMatch, lastBMatch) = firstLastItem(bMatches)
       val (pLead, pTail) = subtractEdges(pEdges)(pMatches)
       val bRemainHd :: bRemainTl = makeEdgesContinuous(bEdges)(bMatches)
       val firstConnect = Edge(firstPMatch.start, firstBMatch.end)
@@ -226,7 +227,6 @@ object Geometry extends LazyLogging {
          |firstConnect: $firstConnect
          |secondConnect: $secondConnect
        """.stripMargin
-
       )
 
       // connect edges in correct order: 
@@ -243,9 +243,6 @@ object Geometry extends LazyLogging {
       logger.debug(s"after joinBy ${pMatches.size} matching edges, the result is: $edges")
       edges
     }
-
-  //  val joinByTwoMatches: JOIN_EDGES =
-  //    pEdges => pMatches => bEdges => bMatches => ???
 
   val joinByThreeMatches: JOIN_EDGES =
     pEdges => pMatches => bEdges => bMatches => ???
