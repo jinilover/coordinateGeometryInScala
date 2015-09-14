@@ -144,20 +144,19 @@ object Geometry extends LazyLogging {
       }
 
   /**
-   * pEdges is a polygon or box edges which are joined continuously, 
-   * subEdges is pEdges subset, which are also joined continuously,
-   * Re-join (pEdges - subEdges) in a continuous manner
+   * bEdges are box edges which are joined continuously,
+   * subEdges is bEdges subset, which are also joined continuously,
+   * Re-join (bEdges - subEdges) in a continuous manner
    */
-  val makeEdgesContinuous: EDGES => EDGES => EDGES =
-    pEdges => subEdges => {
-      subtractEdges(pEdges)(subEdges) match {
-        case (Nil, tail) => tail
-        case (lead, Nil) => lead
-        case (lead, tail) => tail ++ lead
-      }
+  val makeBRemainsContinuous: EDGES => EDGES => EDGES =
+    bEdges => subEdges => {
+      val bRemains = bEdges filter(e => !(subEdges contains e))
+      val startEdge = bRemains.filter(e => bRemains.forall(_.end != e.start)).head
+      val (lead, trail) = bRemains splitAt (bRemains.indexWhere(_ == startEdge))
+      trail ++ lead
     }
   
-  val subtractEdges: EDGES => EDGES => (EDGES, EDGES) =
+  val subtractPMatches: EDGES => EDGES => (EDGES, EDGES) =
     pEdges => subEdges => {
       val (lead, trail) = pEdges splitAt (pEdges indexWhere (_ == subEdges.head))
       (lead, trail drop subEdges.size)
@@ -206,10 +205,10 @@ object Geometry extends LazyLogging {
     
   val joinBy1or2Matches: JOIN_EDGES =
     pEdges => pMatches => bEdges => bMatches => {
+      val (pLead, pTail) = subtractPMatches(pEdges)(pMatches)
+      val bRemainHd :: bRemainTl = makeBRemainsContinuous(bEdges)(bMatches)
       val (firstPMatch,lastPMatch) = firstLastItem(pMatches)
       val (firstBMatch, lastBMatch) = firstLastItem(bMatches)
-      val (pLead, pTail) = subtractEdges(pEdges)(pMatches)
-      val bRemainHd :: bRemainTl = makeEdgesContinuous(bEdges)(bMatches)
       val firstConnect = Edge(firstPMatch.start, firstBMatch.end)
       val secondConnect = Edge(lastBMatch.start, lastPMatch.end)
 
