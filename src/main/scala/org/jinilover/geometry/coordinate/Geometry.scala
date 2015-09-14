@@ -80,8 +80,21 @@ object Geometry extends LazyLogging {
       withinRange(sortedR1._1)(sortedR2) || withinRange(sortedR2._1)(sortedR1)
   }
 
-  val sameRanges: ((Int, Int), (Int, Int)) => Boolean =
-    sortTuple2(_) == sortTuple2(_)
+  /**
+   * same edges if they have the same start/end even they are swapped
+   */
+  val sameEdges: Edge => Edge => Boolean =
+    e1 => e2 =>
+      (e1, e2) match {
+        case (Edge(s1, ed1), Edge(s2, ed2)) =>
+          s1 == s2 && ed1 == ed2 || s1 == ed2 && ed1 == s2
+      }
+
+  /**
+   * from es1, return those edges which are not equal (start/end swapped are equal) to any of es2
+   */
+  val unequalEdges: EDGES => EDGES => EDGES =
+    es1 => es2 => es1.filter(e1 => es2.forall(e2 => !sameEdges(e1)(e2)))
 
   def orientationDependent[T](edge: Edge)(h: => T)(v: => T): T =
     orient(edge) match {
@@ -133,11 +146,14 @@ object Geometry extends LazyLogging {
    */
   val makeBRemainsContinuous: EDGES => EDGES => EDGES =
     bEdges => subEdges => {
-      val bRemains = bEdges filter (e => !(subEdges contains e))
+      val bRemains = subtractEdges(bEdges)(subEdges)
       val startEdge = bRemains.filter(e => bRemains.forall(_.end != e.start)).head
       val (lead, trail) = bRemains splitAt (bRemains.indexWhere(_ == startEdge))
       trail ++ lead
     }
+
+  val subtractEdges: EDGES => EDGES => EDGES =
+    edges => subEdges => edges filter (e => !(subEdges contains e))
 
   val subtractPMatches: EDGES => EDGES => (EDGES, EDGES) =
     pEdges => subEdges => {
@@ -195,22 +211,6 @@ object Geometry extends LazyLogging {
       val firstConnect = Edge(firstPMatch.start, firstBMatch.end)
       val secondConnect = Edge(lastBMatch.start, lastPMatch.end)
 
-      logger.debug(
-        s"""
-         |joinBy ${pMatches.size} matching edges
-         |firstPMatch: $firstPMatch
-         |lastPMatch: $lastPMatch
-         |firstBMatch: $firstBMatch
-         |lastBMatch: $lastBMatch
-         |pLead: $pLead
-         |pTail: $pTail
-         |bRemainHd: $bRemainHd
-         |bRemainTl: $bRemainTl
-         |firstConnect: $firstConnect
-         |secondConnect: $secondConnect
-       """.stripMargin
-      )
-
       // connect edges in correct order: 
       // pLead, firstConnect, bRemainHd, bRemainTl, secondConnect, pTail
       val edges = for {
@@ -227,7 +227,10 @@ object Geometry extends LazyLogging {
     }
 
   val joinByThreeMatches: JOIN_EDGES =
-    pEdges => pMatches => bEdges => bMatches => ???
+    pEdges => pMatches => bEdges => bMatches => {
+      val (pLead, pTail) = subtractPMatches(pEdges)(pMatches)
+      ???
+    }
 
   val joinByFourMatches: JOIN_EDGES =
     pEdges => pMatches => bEdges => bMatches => ???
