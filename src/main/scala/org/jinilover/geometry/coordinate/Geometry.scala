@@ -178,7 +178,8 @@ object Geometry extends LazyLogging {
             case _ => false
           }
       }
-      val edges = firstEdge :: makeEdgesContinuous(pEdges)(List(firstEdge))
+      val (lead, trail) = pEdges splitAt (pEdges.indexWhere(_ == firstEdge))
+      val edges = trail ++ lead
       logger.debug(s"pEdgesCounterClockWise: firstEdge = $firstEdge, edges = $edges")
       edges
     }
@@ -210,6 +211,24 @@ object Geometry extends LazyLogging {
       val bRemainHd :: bRemainTl = makeEdgesContinuous(bEdges)(bMatches)
       val firstConnect = Edge(firstPMatch.start, firstBMatch.end)
       val secondConnect = Edge(lastBMatch.start, lastPMatch.end)
+
+      logger.debug(
+        s"""
+         |joinBy ${pMatches.size} matching edges
+         |firstPMatch: $firstPMatch
+         |lastPMatch: $lastPMatch
+         |firstBMatch: $firstBMatch
+         |lastBMatch: $lastBMatch
+         |pLead: $pLead
+         |pTail: $pTail
+         |bRemainHd: $bRemainHd
+         |bRemainTl: $bRemainTl
+         |firstConnect: $firstConnect
+         |secondConnect: $secondConnect
+       """.stripMargin
+
+      )
+
       // connect edges in correct order: 
       // pLead, firstConnect, bRemainHd, bRemainTl, secondConnect, pTail
       val edges = for {
@@ -225,8 +244,8 @@ object Geometry extends LazyLogging {
       edges
     }
 
-//  val joinByTwoMatches: JOIN_EDGES =
-//    pEdges => pMatches => bEdges => bMatches => ???
+  //  val joinByTwoMatches: JOIN_EDGES =
+  //    pEdges => pMatches => bEdges => bMatches => ???
 
   val joinByThreeMatches: JOIN_EDGES =
     pEdges => pMatches => bEdges => bMatches => ???
