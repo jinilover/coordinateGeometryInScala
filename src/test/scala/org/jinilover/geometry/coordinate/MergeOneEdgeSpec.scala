@@ -16,6 +16,57 @@ class MergeOneEdgeSpec extends FlatSpec with Matchers {
     }
   }
 
+  it should "have form a 'T'" in {
+    val expectedPoly = Polygon((2, 11), (5, 11), (5, 8), (6, 8), (6, 6), (1, 6), (1, 8), (2, 8))
+
+    merge {
+      Polygon((1, 8), (6, 8), (6, 6), (1, 6))
+    } {
+      Box((2, 8), (5, 11))
+    } should be(Some(expectedPoly))
+
+    // swap the roles of the previous test case
+    merge {
+      Polygon((2, 11), (5, 11), (5, 8), (2, 8))
+    } {
+      Box((1, 6), (6, 8))
+    } should be(Some(expectedPoly))
+  }
+
+  it should "have form a 'T' inverted" in {
+    val expectedPoly = Polygon((2, 11), (9, 11), (9, 8), (7, 8), (7, 5), (4, 5), (4, 8), (2, 8))
+
+    merge {
+      Polygon((4, 8), (7, 8), (7, 5), (4, 5))
+    } {
+      Box((2, 8), (9, 11))
+    } should be(Some(expectedPoly))
+
+    // swap the roles of the previous test case
+    merge {
+      Polygon((2, 11), (9, 11), (9, 8), (2, 8))
+    } {
+      Box((4, 5), (7, 8))
+    } should be(Some(expectedPoly))
+  }
+
+  it should "have form a 'T' counterclockwise 90deg" in {
+    val expectedPoly = Polygon((2, 11), (5, 11), (5, 10), (8, 10), (8, 8), (5, 8), (5, 6), (2, 6))
+
+    merge {
+      Polygon((2, 11), (5, 11), (5, 6), (2, 6))
+    } {
+      Box((5, 8), (8, 10))
+    } should be(Some(expectedPoly))
+
+    // swap the roles of the previous test case
+    merge {
+      Polygon((5, 10), (8, 10), (8, 8), (5, 8))
+    } {
+      Box((2, 6), (5, 11))
+    } should be(Some(expectedPoly))
+  }
+
   it should "have form a 'T' clockwise 90deg" in {
     val expectedPoly = Polygon((9, 13), (12, 13), (12, 6), (9, 6), (9, 8), (6, 8), (6, 11), (9, 11))
 

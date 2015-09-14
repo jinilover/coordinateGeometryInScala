@@ -200,14 +200,16 @@ object Geometry extends LazyLogging {
       (x1, x2) => if (f(x1, x2)) x1 else x2
     }
 
-  val joinByOneMatch: JOIN_EDGES =
+  val joinBy1or2Matches: JOIN_EDGES =
     pEdges => pMatches => bEdges => bMatches => {
-      val pMatch = pMatches.head
-      val bMatch = bMatches.head
+      val firstPMatch = pMatches.head
+      val lastPMatch = pMatches.reverse.head
+      val firstBMatch = bMatches.head
+      val lastBMatch = bMatches.reverse.head
       val (pLead, pTail) = subtractEdges(pEdges)(pMatches)
       val bRemainHd :: bRemainTl = makeEdgesContinuous(bEdges)(bMatches)
-      val firstConnect = Edge(pMatch.start, bMatch.end)
-      val secondConnect = Edge(bMatch.start, pMatch.end)
+      val firstConnect = Edge(firstPMatch.start, firstBMatch.end)
+      val secondConnect = Edge(lastBMatch.start, lastPMatch.end)
       // connect edges in correct order: 
       // pLead, firstConnect, bRemainHd, bRemainTl, secondConnect, pTail
       val edges = for {
@@ -219,12 +221,12 @@ object Geometry extends LazyLogging {
           case _ => Some(edges3)
         })
       } yield edges4
-      logger.debug(s"joinByOneMatch: $edges")
+      logger.debug(s"after joinBy ${pMatches.size} matching edges, the result is: $edges")
       edges
     }
 
-  val joinByTwoMatches: JOIN_EDGES =
-    pEdges => pMatches => bEdges => bMatches => ???
+//  val joinByTwoMatches: JOIN_EDGES =
+//    pEdges => pMatches => bEdges => bMatches => ???
 
   val joinByThreeMatches: JOIN_EDGES =
     pEdges => pMatches => bEdges => bMatches => ???
@@ -250,8 +252,8 @@ object Geometry extends LazyLogging {
           val (pMatches, bMatches) = t
           lazy val toPolygon = formPolygon(pEdges)(pMatches)(bEdges)(bMatches)
           pMatches.size match {
-            case 1 => toPolygon(joinByOneMatch)
-            case 2 => toPolygon(joinByTwoMatches)
+            case 1 => toPolygon(joinBy1or2Matches)
+            case 2 => toPolygon(joinBy1or2Matches)
             case 3 => toPolygon(joinByThreeMatches)
             case 4 => toPolygon(joinByFourMatches)
             case _ => None // won't happen, just eliminate non-exhaustive warning
