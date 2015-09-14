@@ -3,7 +3,6 @@ package org.jinilover.geometry.coordinate
 import scala.language.implicitConversions
 import scala.math.abs
 import com.typesafe.scalalogging._
-import org.slf4j.LoggerFactory
 
 case class Point(x: Int, y: Int)
 
@@ -14,17 +13,6 @@ case class Box(tpLeft: Point, btmRight: Point)
 case class Polygon(points: Point*)
 
 object Geometry extends LazyLogging {
-  //  type X = Int
-  //  type Y = Int
-  //  type PointFP = (X, Y)
-  //  type EdgeStartFP = PointFP
-  //  type EdgeEndFP = PointFP
-  //  type TopLeftFP = PointFP
-  //  type BottomRightFP = PointFP
-  //  type EdgeFP = (EdgeStartFP, EdgeEndFP)
-  //  type BoxFP = (TopLeftFP, BottomRightFP)
-  //  type PolygonFP = List[PointFP]
-
   type POINTS = List[Point]
   type EDGES = List[Edge]
   type JOIN_EDGES = EDGES => EDGES => EDGES => EDGES => Option[EDGES]
@@ -54,12 +42,9 @@ object Geometry extends LazyLogging {
 
   val orient: Edge => EdgeOrientation =
     edge => if (edge.start.x == edge.end.x) V else H
-  
+
   val sameOrient: Edge => Edge => Boolean =
     e1 => e2 => orient(e1) == orient(e2)
-
-  //  val calculateLen: EdgeFP => (PointFP => Int) => Int =
-  //    edge => getCoord => abs(getCoord(edge.start) - getCoord(edge.end))
 
   val edgeLen: Edge => Int = {
     edge =>
@@ -70,7 +55,7 @@ object Geometry extends LazyLogging {
   val edgesOverlapped: Edge => Edge => Boolean = {
     e1 => e2 =>
       lazy val matched: (Int, Int) => ((Int, Int), (Int, Int)) => Boolean =
-        (orthogon1, orthogon2) => (r1, r2) => orthogon1 == orthogon2 && rangesOverlapped(sortTuple2(r1), sortTuple2(r2))
+        (orthogon1, orthogon2) => (r1, r2) => orthogon1 == orthogon2 && rangesOverlapped(r1, r2)
       if (sameOrient(e1)(e2))
         orientationDependent(e1) {
           matched(e1.start.y, e2.start.y)(edgeXs(e1), edgeXs(e2))
@@ -89,9 +74,14 @@ object Geometry extends LazyLogging {
 
   val rangesOverlapped: ((Int, Int), (Int, Int)) => Boolean = {
     (r1, r2) =>
+      val sortedR1 = sortTuple2(r1)
+      val sortedR2 = sortTuple2(r2)
       val withinRange: Int => ((Int, Int)) => Boolean = x => r => (r._1 <= x && x < r._2)
-      withinRange(r1._1)(r2) || withinRange(r2._1)(r1)
+      withinRange(sortedR1._1)(sortedR2) || withinRange(sortedR2._1)(sortedR1)
   }
+
+  val sameRanges: ((Int, Int), (Int, Int)) => Boolean =
+    sortTuple2(_) == sortTuple2(_)
 
   def orientationDependent[T](edge: Edge)(h: => T)(v: => T): T =
     orient(edge) match {
@@ -105,13 +95,6 @@ object Geometry extends LazyLogging {
    */
   val join2Edges: Edge => Edge => Option[EDGES] =
     e1 => e2 =>
-      //      (e1, e2) match {
-      //        case _ if e1.end != e2.start => None
-      //        case _ if orient(e1) == orient(e2) => Some(List(EdgeFP(e1.start, e2.end)))
-      //        case _ if e1.start == e1.end => Some(List(e2))
-      //        case _ if e2.start == e2.end => Some(List(e1))
-      //        case _ => Some(List(e1, e2))
-      //      }
       (e1, e2) match {
         case _ if e1.end != e2.start => None
         case _ if e1.start == e1.end => Some(List(e2))
@@ -133,7 +116,7 @@ object Geometry extends LazyLogging {
           val bMatches = boxEdges filter (edgesOverlapped(pEdge))
           if (bMatches.isEmpty) z
           else
-          // bMatches.size should be 1 becaise a polygon edge overlaps with at most 1 box edge
+          // bMatches.size should be 1 because a polygon edge overlaps with at most 1 box edge
             for {
               zVal <- z
               (ps, bs) = zVal
@@ -150,12 +133,12 @@ object Geometry extends LazyLogging {
    */
   val makeBRemainsContinuous: EDGES => EDGES => EDGES =
     bEdges => subEdges => {
-      val bRemains = bEdges filter(e => !(subEdges contains e))
+      val bRemains = bEdges filter (e => !(subEdges contains e))
       val startEdge = bRemains.filter(e => bRemains.forall(_.end != e.start)).head
       val (lead, trail) = bRemains splitAt (bRemains.indexWhere(_ == startEdge))
       trail ++ lead
     }
-  
+
   val subtractPMatches: EDGES => EDGES => (EDGES, EDGES) =
     pEdges => subEdges => {
       val (lead, trail) = pEdges splitAt (pEdges indexWhere (_ == subEdges.head))
@@ -200,14 +183,14 @@ object Geometry extends LazyLogging {
       (x1, x2) => if (f(x1, x2)) x1 else x2
     }
 
-  def firstLastItem[T](list: List[T]): (T, T) = 
+  def firstLastItem[T](list: List[T]): (T, T) =
     (list.head, list.reverse.head)
-    
+
   val joinBy1or2Matches: JOIN_EDGES =
     pEdges => pMatches => bEdges => bMatches => {
       val (pLead, pTail) = subtractPMatches(pEdges)(pMatches)
       val bRemainHd :: bRemainTl = makeBRemainsContinuous(bEdges)(bMatches)
-      val (firstPMatch,lastPMatch) = firstLastItem(pMatches)
+      val (firstPMatch, lastPMatch) = firstLastItem(pMatches)
       val (firstBMatch, lastBMatch) = firstLastItem(bMatches)
       val firstConnect = Edge(firstPMatch.start, firstBMatch.end)
       val secondConnect = Edge(lastBMatch.start, lastPMatch.end)
