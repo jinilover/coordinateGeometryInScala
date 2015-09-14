@@ -122,6 +122,12 @@ object Geometry extends LazyLogging {
         case _ => Some(List(edge))
       }
 
+  val appendEdges: EDGES => EDGES => Option[EDGES] =
+    es1 => es2 =>
+      es2.foldLeft[Option[EDGES]](Some(es1)) {
+        (z, e) => z.flatMap(appendEdge(_)(e))
+      }
+
   val overlapEdges: EDGES => EDGES => Option[(EDGES, EDGES)] =
     polyEdges => boxEdges =>
       polyEdges.foldLeft[Option[(EDGES, EDGES)]](Some(Nil, Nil)) {
@@ -200,28 +206,22 @@ object Geometry extends LazyLogging {
     }
 
   def firstLastItem[T](list: List[T]): (T, T) =
-    (list.head, list.reverse.head)
+    (list.head, list.last)
+
+  val connectEdges: List[EDGES] => Option[EDGES] =
+    _.foldLeft[Option[EDGES]](Some(List.empty[Edge])) {
+      (z, es) => z.flatMap(appendEdges(_)(es))
+    }
 
   val joinBy1or2Matches: JOIN_EDGES =
     pEdges => pMatches => bEdges => bMatches => {
       val (pLead, pTail) = subtractPMatches(pEdges)(pMatches)
-      val bRemainHd :: bRemainTl = makeBRemainsContinuous(bEdges)(bMatches)
+      val bRemains = makeBRemainsContinuous(bEdges)(bMatches)
       val (firstPMatch, lastPMatch) = firstLastItem(pMatches)
       val (firstBMatch, lastBMatch) = firstLastItem(bMatches)
-      val firstConnect = Edge(firstPMatch.start, firstBMatch.end)
-      val secondConnect = Edge(lastBMatch.start, lastPMatch.end)
-
-      // connect edges in correct order: 
-      // pLead, firstConnect, bRemainHd, bRemainTl, secondConnect, pTail
-      val edges = for {
-        edges1 <- appendEdge(pLead)(firstConnect)
-        edges2 <- appendEdge(edges1)(bRemainHd)
-        edges3 <- appendEdge(edges2 ++ bRemainTl)(secondConnect)
-        edges4 <- (pTail match {
-          case x :: xs => appendEdge(edges3)(x) map (_ ++ xs)
-          case _ => Some(edges3)
-        })
-      } yield edges4
+      val conn1 = List(Edge(firstPMatch.start, firstBMatch.end))
+      val conn2 = List(Edge(lastBMatch.start, lastPMatch.end))
+      val edges = connectEdges(List(pLead, conn1, bRemains, conn2, pTail))
       logger.debug(s"after joinBy ${pMatches.size} matching edges, the result is: $edges")
       edges
     }
@@ -229,7 +229,32 @@ object Geometry extends LazyLogging {
   val joinByThreeMatches: JOIN_EDGES =
     pEdges => pMatches => bEdges => bMatches => {
       val (pLead, pTail) = subtractPMatches(pEdges)(pMatches)
-      ???
+      val bRemain = subtractEdges(bEdges)(bMatches).head
+      val pPartialMatches = unequalEdges(pMatches)(bMatches)
+      val bPartialMatches = unequalEdges(bMatches)(pMatches)
+      val (conn1, conn2) = bPartialMatches.size match {
+        case 0 => (Nil, Nil)
+        case 1 =>
+          val bMatch = bPartialMatches(0)
+          val pMatch = pPartialMatches(0)
+          if (bMatches.last == bMatch)
+            (Nil, List(Edge(bMatch.start, pMatch.end)))
+          else
+            (List(Edge(pMatch.start, bMatch.end)))
+        case 2 =>
+          ???
+      }
+      // connect edges in this order - pLead, conn1, bRemain, conn2, pTail
+      val edges = ???
+//        for {
+//        es1 <- appendEdges(pLead)(conn1)
+//        es2 <- appendEdge(es1)(bRemain)
+//        es3 <- appendEdges(es2)(conn2)
+//        es4 <- appendEdges(es3)(pTail)
+//      } yield (es4)
+
+      logger.debug(s"after joinByThreeMatches, the result is: $edges")
+      edges
     }
 
   val joinByFourMatches: JOIN_EDGES =
