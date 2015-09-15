@@ -140,9 +140,13 @@ object Geometry extends LazyLogging {
               zVal <- z
               (ps, bs) = zVal
               newPs <- appendEdge(ps)(pEdge)
-            } yield (newPs, bs :+ bMatches(0))
+            } yield (newPs, bs :+ bMatches.head)
       } flatMap {
-        tuple => if (tuple._1.isEmpty) None else Some(tuple)
+        tuple =>
+          tuple match {
+            case (Nil, Nil) => None
+            case _ => Some(tuple)
+          }
       }
 
   /**
@@ -235,15 +239,16 @@ object Geometry extends LazyLogging {
       val (conn1, conn2) = bPartialMatches.size match {
         case 0 => (List.empty[Edge], List.empty[Edge])
         case 1 =>
-          val bMatch = bPartialMatches(0)
-          val pMatch = pPartialMatches(0)
+          val bMatch = bPartialMatches.head
+          val pMatch = pPartialMatches.head
           if (bMatches.last == bMatch)
             (List.empty[Edge], List(Edge(bMatch.start, pMatch.end)))
           else
             (List(Edge(pMatch.start, bMatch.end)), List.empty[Edge])
         case 2 =>
-          (List(Edge(pPartialMatches(0).start, bPartialMatches(0).end)),
-            List(Edge(bPartialMatches(1).start, pPartialMatches(1).end)))
+          val (bMatchFirst, bMatchLast) = firstLastItem(bPartialMatches)
+          val (pMatchFirst, pMatchLast) = firstLastItem(pPartialMatches)
+          (List(Edge(pMatchFirst.start, bMatchFirst.end)), List(Edge(bMatchLast.start, pMatchLast.end)))
       }
       val edges = connectEdges(List(pLead, conn1, bRemain, conn2, pTail))
       logger.debug(s"after joinByThreeMatches, the result is: $edges")
