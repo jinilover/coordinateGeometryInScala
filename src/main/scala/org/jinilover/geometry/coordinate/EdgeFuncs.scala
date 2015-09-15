@@ -84,13 +84,15 @@ object EdgeFuncs extends LazyLogging {
         (z, pEdge) =>
           val bMatches = boxEdges filter (edgesOverlapped(pEdge))
           if (bMatches.isEmpty) z
-          else
-          // bMatches.size should be 1 because a polygon edge overlaps with at most 1 box edge
+          else {
+            // bMatches.size should be 1 because a polygon edge overlaps with at most 1 box edge
+            val bMatch = bMatches.head
             for {
               zVal <- z
               (ps, bs) = zVal
               newPs <- appendEdge(ps)(pEdge)
-            } yield (newPs, bs :+ bMatches.head)
+            } yield (newPs, if (bs contains bMatch) bs else bs :+ bMatch)
+          }
       } flatMap {
         tuple =>
           tuple match {

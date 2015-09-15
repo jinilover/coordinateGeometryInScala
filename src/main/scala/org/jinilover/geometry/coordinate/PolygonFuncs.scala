@@ -52,6 +52,12 @@ object PolygonFuncs extends LazyLogging {
       val (pLead, pTail) = subtractItems(pEdges)(pMatches)
       val pPartialMatches = unequalEdges(pMatches)(bMatches)
       val bPartialMatches = unequalEdges(bMatches)(pMatches)
+      logger.debug(
+        s"""
+           |joinByFourMatches, pPartialMatches:
+           |$pPartialMatches
+           |bPartialMatches:
+           |$bPartialMatches""".stripMargin)
       val connsFromMatches = pPartialMatches.zip(bPartialMatches) map {
         t =>
           val (pEdge, bEdge) = t
@@ -106,7 +112,7 @@ object PolygonFuncs extends LazyLogging {
         t =>
           val (pMatches, bMatches) = t
           lazy val toPolygon = formPolygon(pEdges)(pMatches)(bEdges)(bMatches)
-          pMatches.size match {
+          bMatches.size match {
             case 1 => toPolygon(joinBy1or2Matches)
             case 2 => toPolygon(joinBy1or2Matches)
             case 3 => toPolygon(joinByThreeMatches)
