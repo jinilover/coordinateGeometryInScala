@@ -81,7 +81,7 @@ object Geometry extends LazyLogging {
   }
 
   /**
-   * same edges if they have the same start/end even they are swapped
+   * same edges if they have the same start/end even they point to opposite direction
    */
   val sameEdges: Edge => Edge => Boolean =
     e1 => e2 =>
