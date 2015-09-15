@@ -156,44 +156,56 @@ object Geometry extends LazyLogging {
    */
   val makeBRemainsContinuous: EDGES => EDGES => EDGES =
     bEdges => subEdges => {
-      val bRemains = subtractEdges(bEdges)(subEdges)
+      val bRemains = subtractItems(bEdges)(subEdges)
       val startEdge = bRemains.filter(e => bRemains.forall(_.end != e.start)).head
-      val (lead, trail) = bRemains splitAt (bRemains.indexWhere(_ == startEdge))
-      trail ++ lead
-    }
-
-  val subtractEdges: EDGES => EDGES => EDGES =
-    edges => subEdges => edges filter (e => !(subEdges contains e))
-
-  val subtractPMatches: EDGES => EDGES => (EDGES, EDGES) =
-    pEdges => subEdges => {
-      val (lead, trail) = pEdges splitAt (pEdges indexWhere (_ == subEdges.head))
-      (lead, trail drop subEdges.size)
+      shiftItems(bRemains)(_ == startEdge)
     }
 
   /**
-   * pEdges is a polygon or box edges which are joined continuously, 
+   * shift the items at position where the item satisfy f predicate 
+   */
+  def shiftItems[T](items: List[T])(f: T => Boolean): List[T] = {
+    val (lead, trail) = items splitAt(items indexWhere f)
+    trail ++ lead
+  }
+
+  /**
+   * subItems are items subset. 
+   */
+  def subtractItems[T](items: List[T])(subItems: List[T]): List[T] =
+    items filter (x => !(subItems contains x))
+
+  /**
+   *  subItems are items subset, subItems items are in the same order as the 
+   *  correspondent in items  
+   */
+  def subtractContinuousItems[T](items: List[T])(subItems: List[T]): (List[T], List[T]) = {
+    val (lead, trail) = items splitAt (items indexWhere (_ == subItems.head))
+    (lead, trail drop subItems.size)
+  }
+
+  /**
+   * pEdges is a polygon edges which are joined continuously, 
    * but it may not start with the lowest horizontal edges,
    * shift the edges s.t. it starts with the lowest horizontal edges.
    */
-  val makePEdgesCounterClockWise: EDGES => EDGES =
+  val shiftPEdges: EDGES => EDGES =
     pEdges => {
-      val firstEdge = minItem(pEdges) {
+      val firstEdge = pEdges reduceLeft {
         (e1, e2) =>
           (e1.start, e2.start) match {
-            case (pt1, pt2) if pt1.y > pt2.y => true
-            case (pt1, pt2) if pt1.y == pt2.y => pt1.x < pt2.x
-            case _ => false
+            case (pt1, pt2) if pt1.y > pt2.y => e1
+            case (pt1, pt2) if pt1.y == pt2.y && pt1.x < pt2.x => e1
+            case _ => e2
           }
       }
-      val (lead, trail) = pEdges splitAt (pEdges.indexWhere(_ == firstEdge))
-      val edges = trail ++ lead
+      val edges = shiftItems(pEdges)(_ == firstEdge)
       logger.debug(s"pEdgesCounterClockWise: firstEdge = $firstEdge, edges = $edges")
       edges
     }
 
   /**
-   * remove 0 length edge, replace 2 colinear edges to 1 
+   * combine 2 colinear edges to 1
    */
   val reduceEdges: EDGES => EDGES =
     _.foldRight(List.empty[Edge]) {
@@ -202,11 +214,6 @@ object Geometry extends LazyLogging {
           case hd :: tl if sameOrient(e)(hd) => Edge(e.start, hd.end) :: tl
           case _ => e :: z
         }
-    }
-
-  def minItem[T](list: List[T])(f: (T, T) => Boolean): T =
-    list reduceLeft {
-      (x1, x2) => if (f(x1, x2)) x1 else x2
     }
 
   def firstLastItem[T](list: List[T]): (T, T) =
@@ -219,7 +226,7 @@ object Geometry extends LazyLogging {
 
   val joinBy1or2Matches: JOIN_EDGES =
     pEdges => pMatches => bEdges => bMatches => {
-      val (pLead, pTail) = subtractPMatches(pEdges)(pMatches)
+      val (pLead, pTail) = subtractContinuousItems(pEdges)(pMatches)
       val bRemains = makeBRemainsContinuous(bEdges)(bMatches)
       val (firstPMatch, lastPMatch) = firstLastItem(pMatches)
       val (firstBMatch, lastBMatch) = firstLastItem(bMatches)
@@ -232,8 +239,8 @@ object Geometry extends LazyLogging {
 
   val joinByThreeMatches: JOIN_EDGES =
     pEdges => pMatches => bEdges => bMatches => {
-      val (pLead, pTail) = subtractPMatches(pEdges)(pMatches)
-      val bRemain = subtractEdges(bEdges)(bMatches)
+      val (pLead, pTail) = subtractContinuousItems(pEdges)(pMatches)
+      val bRemain = subtractItems(bEdges)(bMatches)
       val pPartialMatches = unequalEdges(pMatches)(bMatches)
       val bPartialMatches = unequalEdges(bMatches)(pMatches)
       val (conn1, conn2) = bPartialMatches.size match {
@@ -263,7 +270,7 @@ object Geometry extends LazyLogging {
       joinByMatch(pEdges)(pMatches)(bEdges)(bMatches) flatMap {
         edges =>
           val vertices =
-            (makePEdgesCounterClockWise andThen reduceEdges andThen (_.map(_.start)))(edges)
+            (shiftPEdges andThen reduceEdges andThen (_.map(_.start)))(edges)
           Some(Polygon(vertices: _*))
       }
 
