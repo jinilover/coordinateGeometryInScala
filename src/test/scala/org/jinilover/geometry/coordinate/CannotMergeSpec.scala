@@ -1,14 +1,14 @@
 package org.jinilover.geometry.coordinate
 
 import org.scalatest.{Matchers, FlatSpec}
-import Geometry._
+import PolygonFuncs._
 
 /**
  * Test if the algo can decide not to match the polygon due to no edge matching 
  */
 class CannotMergeSpec extends FlatSpec with Matchers {
   it should "no matching edge" in {
-    merge {
+    combine {
       Polygon((2, 13), (6, 13), (6, 9), (2, 9))
     } {
       Box((6, 5), (12, 9))
@@ -16,7 +16,7 @@ class CannotMergeSpec extends FlatSpec with Matchers {
   }
 
   it should "all box edges are matched, but the polygon's matching edges are not continuous" in {
-    merge {
+    combine {
       Polygon(
         (3, 20), (11, 20), (11, 18), (5, 18),
         (5, 11), (13, 11), (13, 14), (11, 14),
@@ -27,7 +27,7 @@ class CannotMergeSpec extends FlatSpec with Matchers {
   }
 
   it should "2 box edges are matched, but the polygon's matching edges are not continuous" in {
-    merge {
+    combine {
       Polygon(
         (3, 20), (7, 20), (7, 13), (11, 13),
         (11, 20), (15, 20), (15, 11), (13, 11))
@@ -37,7 +37,7 @@ class CannotMergeSpec extends FlatSpec with Matchers {
   }
 
   it should ("not merge, matched by 1 edge, but the formed polygon has a hole") in {
-    merge {
+    combine {
       Polygon(
         (10, 14), (16, 14), (16, 4), (3, 4),
         (3, 10), (7, 10), (7, 6), (13, 6),
@@ -49,7 +49,7 @@ class CannotMergeSpec extends FlatSpec with Matchers {
   }
 
   it should "2 box edges are matched and the polygon's are continuous, but the formed polygon has a hole" in {
-    merge {
+    combine {
       Polygon(
         (10, 14), (16, 14), (16, 4), (3, 4),
         (3, 10), (7, 10), (7, 6), (13, 6),

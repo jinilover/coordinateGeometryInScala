@@ -1,7 +1,9 @@
 package org.jinilover.geometry.coordinate
 
 import org.scalatest.{Matchers, FlatSpec}
-import Geometry._
+import PolygonFuncs._
+import EdgeFuncs._
+import CommonFuncs._
 
 
 class EdgeSpec  extends FlatSpec with Matchers {
