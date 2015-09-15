@@ -6,7 +6,7 @@ import Geometry._
 import scala.language.postfixOps
 
 class MergeOneEdgeSpec extends FlatSpec with Matchers {
-  it should "have merge a poly with a box with a horizontal edge, the right is higher" in {
+  it should "merge a poly with a box with a horizontal edge, the right is higher" in {
     val expectedPoly = Polygon((2, 13), (6, 13), (6, 10), (12, 10), (12, 6), (6, 6), (6, 9), (2, 9))
 
     merge {
@@ -27,7 +27,7 @@ class MergeOneEdgeSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "have merge a poly with a box with a horizontal edge, the left is higher" in {
+  it should "merge a poly with a box with a horizontal edge, the left is higher" in {
     val expectedPoly = Polygon((9, 10), (13, 10), (13, 6), (9, 6), (9, 4), (5, 4), (5, 8), (9, 8))
 
     merge {
@@ -48,7 +48,7 @@ class MergeOneEdgeSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "have merge a poly with a box with a vertical edge, the top is lefter" in {
+  it should "merge a poly with a box with a vertical edge, the top is lefter" in {
     val expectedPoly = Polygon((5, 10), (10, 10), (10, 7), (7, 7), (7, 4), (3, 4), (3, 7), (5, 7))
 
     merge {
@@ -69,7 +69,7 @@ class MergeOneEdgeSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "have merge a poly with a box with a vertical edge, the top is righter" in {
+  it should "merge a poly with a box with a vertical edge, the top is righter" in {
     val expectedPoly = Polygon((6, 10), (11, 10), (11, 7), (14, 7), (14, 4), (9, 4), (9, 7), (6, 7))
 
     merge {
@@ -90,7 +90,7 @@ class MergeOneEdgeSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "have form a 'T'" in {
+  it should "form a 'T'" in {
     val expectedPoly = Polygon((2, 11), (5, 11), (5, 8), (6, 8), (6, 6), (1, 6), (1, 8), (2, 8))
 
     merge {
@@ -107,7 +107,7 @@ class MergeOneEdgeSpec extends FlatSpec with Matchers {
     } should be(Some(expectedPoly))
   }
 
-  it should "have form a 'T' inverted" in {
+  it should "form a 'T' inverted" in {
     val expectedPoly = Polygon((2, 11), (9, 11), (9, 8), (7, 8), (7, 5), (4, 5), (4, 8), (2, 8))
 
     merge {
@@ -124,7 +124,7 @@ class MergeOneEdgeSpec extends FlatSpec with Matchers {
     } should be(Some(expectedPoly))
   }
 
-  it should "have form a 'T' counterclockwise 90deg" in {
+  it should "form a 'T' counterclockwise 90deg" in {
     val expectedPoly = Polygon((2, 11), (5, 11), (5, 10), (8, 10), (8, 8), (5, 8), (5, 6), (2, 6))
 
     merge {
@@ -141,7 +141,7 @@ class MergeOneEdgeSpec extends FlatSpec with Matchers {
     } should be(Some(expectedPoly))
   }
 
-  it should "have form a 'T' clockwise 90deg" in {
+  it should "form a 'T' clockwise 90deg" in {
     val expectedPoly = Polygon((9, 13), (12, 13), (12, 6), (9, 6), (9, 8), (6, 8), (6, 11), (9, 11))
 
     merge {
@@ -158,7 +158,7 @@ class MergeOneEdgeSpec extends FlatSpec with Matchers {
     } should be(Some(expectedPoly))
   }
 
-  it should "have form a 'L' pointing to left" in {
+  it should "form a 'L' pointing to left" in {
     val expectedPoly = Polygon((2, 11), (8, 11), (8, 7), (5, 7), (5, 9), (2, 9))
 
     merge {
@@ -175,7 +175,7 @@ class MergeOneEdgeSpec extends FlatSpec with Matchers {
     } should be(Some(expectedPoly))
   }
 
-  it should "have form a 'L'" in {
+  it should "form a 'L'" in {
     val expectedPoly = Polygon((2, 11), (8, 11), (8, 8), (5, 8), (5, 6), (2, 6))
     merge {
       Polygon((2, 11), (5, 11), (5, 6), (2, 6))

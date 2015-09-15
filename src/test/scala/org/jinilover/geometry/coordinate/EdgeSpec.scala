@@ -5,21 +5,21 @@ import Geometry._
 
 
 class EdgeSpec  extends FlatSpec with Matchers {
-  it should "have calculated a horizontal edge length correctly" in {
+  it should "calculate a horizontal edge length correctly" in {
     val pt1 = Point(2, 13)
     val pt2 = Point(6, 13)
     edgeLen(Edge(pt1, pt2)) should be(4)
     edgeLen(Edge(pt2, pt1)) should be(4)
   }
 
-  it should "have calculated a vertical edge length correctly" in {
+  it should "calculate a vertical edge length correctly" in {
     val pt1 = Point(13, 2)
     val pt2 = Point(13, 6)
     edgeLen(Edge(pt1, pt2)) should be(4)
     edgeLen(Edge(pt2, pt1)) should be(4)
   }
 
-  it should "have deduced a box's 4 edges correctly" in {
+  it should "deduce a box's 4 edges correctly" in {
     boxToEdges {
       Box((2, 9), (6, 13))
     } should be {
@@ -32,7 +32,7 @@ class EdgeSpec  extends FlatSpec with Matchers {
     }
   }
 
-  it should "have deduced a polygon's edges correctly" in {
+  it should "deduce a polygon's edges correctly" in {
     polygonToEdges {
       Polygon(
         (2, 13), (6, 13), (6, 10), (12, 10), (12, 6), (6, 6), (6, 9), (2, 9)
@@ -51,7 +51,7 @@ class EdgeSpec  extends FlatSpec with Matchers {
     }
   }
 
-  it should "have deduced range overlapped correctly" in {
+  it should "deduce range overlappe correctly" in {
     rangesOverlapped((9, 13), (6, 10)) should be(true)
     rangesOverlapped((6, 10), (9, 13)) should be(true)
     rangesOverlapped((6, 10), (6, 10)) should be(true)
@@ -60,14 +60,14 @@ class EdgeSpec  extends FlatSpec with Matchers {
     rangesOverlapped((9, 13), (5, 8)) should be(false)
   }
 
-  it should "have determined if edge overlapped" in {
+  it should "determine if edge overlapped" in {
     edgesOverlapped(Edge((6, 13), (6, 9)))(Edge((6, 6), (6, 10))) should be(true)
     edgesOverlapped(Edge((6, 13), (6, 9)))(Edge((6, 10), (6, 6))) should be(true)
     edgesOverlapped(Edge((6, 13), (6, 9)))(Edge((6, 5), (6, 9))) should be(false)
     edgesOverlapped(Edge((2, 8), (6, 8)))(Edge((6, 5), (6, 9))) should be(false)
   }
 
-  it should "have deduced 1 overlapping edges a polygon and a box" in {
+  it should "deduce 1 overlapping edges a polygon and a box" in {
     overlapEdges {
       List(
         Edge((2, 13), (6, 13)),
@@ -115,7 +115,7 @@ class EdgeSpec  extends FlatSpec with Matchers {
     }
   }
 
-  it should "have deduced 2 overlapping edges a polygon and a box" in {
+  it should "deduce 2 overlapping edges a polygon and a box" in {
     overlapEdges {
       List(
         Edge((3, 17), (9, 17)),
@@ -177,7 +177,7 @@ class EdgeSpec  extends FlatSpec with Matchers {
 //    Edge.inMatchOrder(polyEdges)(boxEdges) should be(boxEdges)
   }
 
-  it should "have deduced 3 overlapping polyEdges a polygon and a box" in {
+  it should "deduce 3 overlapping polyEdges a polygon and a box" in {
     overlapEdges {
       List(
         Edge((3, 10), (6, 10)),
@@ -239,7 +239,7 @@ class EdgeSpec  extends FlatSpec with Matchers {
 //    Edge.inMatchOrder(polyEdges)(boxEdges) should be(boxEdges)
   }
 
-  it should "have deduced 4 overlapping polyEdges a polygon and a box" in {
+  it should "deduce 4 overlapping polyEdges a polygon and a box" in {
     overlapEdges {
       List(
         Edge((8, 14), (18, 14)),
@@ -273,7 +273,7 @@ class EdgeSpec  extends FlatSpec with Matchers {
 //    Edge.inMatchOrder(polyEdges)(boxEdges) should be(boxEdges)
   }
 
-  it should "have deduced no overlapping polyEdges between a polygon and a box" in {
+  it should "deduce no overlapping polyEdges between a polygon and a box" in {
     overlapEdges {
       List(
         Edge((2, 13), (6, 13)),
@@ -291,7 +291,7 @@ class EdgeSpec  extends FlatSpec with Matchers {
     } should be(None)
   }
 
-  it should "have deduced invalid overlapping polyEdges (due to incontinuous) between a polygon and a box" in {
+  it should "deduce invalid overlapping polyEdges (due to incontinuous) between a polygon and a box" in {
     overlapEdges {
       List(
         Edge((3, 20), (7, 20)),
