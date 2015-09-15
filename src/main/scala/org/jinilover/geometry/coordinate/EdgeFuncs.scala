@@ -73,10 +73,9 @@ object EdgeFuncs extends LazyLogging {
       }
 
   val appendEdges: EDGES => EDGES => Option[EDGES] =
-    es1 => es2 =>
-      es2.foldLeft[Option[EDGES]](Some(es1)) {
-        (z, e) => z.flatMap(appendEdge(_)(e))
-      }
+    es1 => _.foldLeft[Option[EDGES]](Some(es1)) {
+      (z, e) => z.flatMap(appendEdge(_)(e))
+    }
 
   val overlapEdges: EDGES => EDGES => Option[(EDGES, EDGES)] =
     polyEdges => boxEdges =>
@@ -91,13 +90,17 @@ object EdgeFuncs extends LazyLogging {
               zVal <- z
               (ps, bs) = zVal
               newPs <- appendEdge(ps)(pEdge)
-            } yield (newPs, if (bs contains bMatch) bs else bs :+ bMatch)
+            } yield (newPs, bs :+ bMatch)
           }
       } flatMap {
         tuple =>
           tuple match {
             case (Nil, Nil) => None
-            case _ => Some(tuple)
+            case (pMatches, bMatches) => Some(pMatches, bMatches.distinct)
+            // a box can match with > 1 polygon edge
+            // this happen when 3 box edges are equal to the polygon's correspondant
+            // and 1 box edge matches with 2 polygon edges
+            // and these 5 polygon edges are continuous
           }
       }
 

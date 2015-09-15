@@ -52,20 +52,15 @@ object PolygonFuncs extends LazyLogging {
       val (pLead, pTail) = subtractItems(pEdges)(pMatches)
       val pPartialMatches = unequalEdges(pMatches)(bMatches)
       val bPartialMatches = unequalEdges(bMatches)(pMatches)
-      logger.debug(
-        s"""
-           |joinByFourMatches, pPartialMatches:
-           |$pPartialMatches
-           |bPartialMatches:
-           |$bPartialMatches""".stripMargin)
-      val connsFromMatches = pPartialMatches.zip(bPartialMatches) map {
-        t =>
-          val (pEdge, bEdge) = t
-          if (pEdge.end == bEdge.start)
-            Edge(pEdge.start, bEdge.end)
-          else
-            Edge(bEdge.start, pEdge.end)
-      }
+      val connsFromMatches =
+        if (pPartialMatches.size == bPartialMatches.size)
+          pPartialMatches.zip(bPartialMatches) map {
+            t =>
+              val (pEdge, bEdge) = t
+              if (pEdge.end == bEdge.start) Edge(pEdge.start, bEdge.end) else Edge(bEdge.start, pEdge.end)
+          }
+        else
+          List(Edge(pLead.last.end, pTail.head.start))
       val edges = connectEdges(List(pLead, connsFromMatches, pTail))
       logger.debug(s"after joinByFourMatches, the result is: $edges")
       edges
@@ -88,20 +83,15 @@ object PolygonFuncs extends LazyLogging {
       (Edge(lastPt, head) :: edges).reverse
   }
 
-  val boxToEdges: Box => EDGES =
-    boxToPolygon andThen polygonToEdges
-
-  import scalaz.Functor
-  import scalaz.std.option._
+  val boxToEdges: Box => EDGES = boxToPolygon andThen polygonToEdges
 
   val formPolygon: EDGES => EDGES => EDGES => EDGES => JOIN_EDGES => Option[Polygon] =
-    pEdges => pMatches => bEdges => bMatches => joinByMatch =>
-      joinByMatch(pEdges)(pMatches)(bEdges)(bMatches) flatMap {
+    pEdges => pMatches => bEdges => bMatches => 
+      _(pEdges)(pMatches)(bEdges)(bMatches) flatMap {
         edges =>
           val composite =
-            shiftPEdges andThen combineColinearEdges andThen holeCheck andThen
-              Functor[Option].lift((_: EDGES).map(_.start))
-          composite(edges) map (Polygon(_: _*))
+            shiftPEdges andThen combineColinearEdges andThen (_.map(_.start)) andThen (pts => Some(Polygon(pts: _*)))
+          composite(edges)
       }
 
   val combine: Polygon => Box => Option[Polygon] =

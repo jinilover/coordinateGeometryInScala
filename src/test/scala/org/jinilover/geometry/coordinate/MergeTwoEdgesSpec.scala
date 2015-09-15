@@ -6,7 +6,6 @@ import PolygonFuncs._
 import scala.language.postfixOps
 
 class MergeTwoEdgesSpec extends FlatSpec with Matchers {
-
   it should "merge a poly with a top right big box" in {
     combine {
       Polygon((3, 17), (9, 17), (9, 14), (6, 14), (6, 11), (3, 11))

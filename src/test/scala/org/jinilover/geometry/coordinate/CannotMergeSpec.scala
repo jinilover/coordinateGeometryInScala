@@ -36,27 +36,4 @@ class CannotMergeSpec extends FlatSpec with Matchers {
     } should be(None)
   }
 
-  it should ("not merge, matched by 1 edge, but the formed polygon has a hole") in {
-    combine {
-      Polygon(
-        (10, 14), (16, 14), (16, 4), (3, 4),
-        (3, 10), (7, 10), (7, 6), (13, 6),
-        (13, 10), (10, 10)
-      )
-    } {
-      Box((7, 8), (10, 10))
-    } should be(None)
-  }
-
-  it should "2 box edges are matched and the polygon's are continuous, but the formed polygon has a hole" in {
-    combine {
-      Polygon(
-        (10, 14), (16, 14), (16, 4), (3, 4),
-        (3, 10), (7, 10), (7, 6), (13, 6),
-        (13, 10), (10, 10)
-      )
-    } {
-      Box((7, 6), (10, 10))
-    } should be(None)
-  }
 }
