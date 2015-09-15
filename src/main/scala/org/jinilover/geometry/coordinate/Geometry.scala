@@ -150,22 +150,16 @@ object Geometry extends LazyLogging {
       }
 
   /**
-   * bEdges are box edges which are joined continuously,
-   * subEdges is bEdges subset, which are also joined continuously,
-   * Re-join (bEdges - subEdges) in a continuous manner
+   * the given edges, find the only edge whose start cannot connect to other edges 
    */
-  val makeBRemainsContinuous: EDGES => EDGES => EDGES =
-    bEdges => subEdges => {
-      val bRemains = subtractItems(bEdges)(subEdges)
-      val startEdge = bRemains.filter(e => bRemains.forall(_.end != e.start)).head
-      shiftItems(bRemains)(_ == startEdge)
-    }
+  val headOfPEdge: EDGES => Edge =
+    es => es.filter(e => es.forall(_.end != e.start)).head
 
   /**
    * shift the items at position where the item satisfy f predicate 
    */
   def shiftItems[T](items: List[T])(f: T => Boolean): List[T] = {
-    val (lead, trail) = items splitAt(items indexWhere f)
+    val (lead, trail) = items splitAt (items indexWhere f)
     trail ++ lead
   }
 
@@ -176,8 +170,8 @@ object Geometry extends LazyLogging {
     items filter (x => !(subItems contains x))
 
   /**
-   *  subItems are items subset, subItems items are in the same order as the 
-   *  correspondent in items  
+   * subItems are items subset, subItems items are in the same order as the
+   * correspondent in items
    */
   def subtractContinuousItems[T](items: List[T])(subItems: List[T]): (List[T], List[T]) = {
     val (lead, trail) = items splitAt (items indexWhere (_ == subItems.head))
@@ -204,6 +198,9 @@ object Geometry extends LazyLogging {
       edges
     }
 
+  val holeCheck: EDGES => Option[EDGES] =
+    es => Some(es) // TODO
+
   /**
    * combine 2 colinear edges to 1
    */
@@ -227,7 +224,10 @@ object Geometry extends LazyLogging {
   val joinBy1or2Matches: JOIN_EDGES =
     pEdges => pMatches => bEdges => bMatches => {
       val (pLead, pTail) = subtractContinuousItems(pEdges)(pMatches)
-      val bRemains = makeBRemainsContinuous(bEdges)(bMatches)
+      val bRemains = {
+        val remains = subtractItems(bEdges)(bMatches)
+        shiftItems(remains)(_ == headOfPEdge(remains))
+      }
       val (firstPMatch, lastPMatch) = firstLastItem(pMatches)
       val (firstBMatch, lastBMatch) = firstLastItem(bMatches)
       val conn1 = List(Edge(firstPMatch.start, firstBMatch.end))
@@ -263,15 +263,34 @@ object Geometry extends LazyLogging {
     }
 
   val joinByFourMatches: JOIN_EDGES =
-    pEdges => pMatches => bEdges => bMatches => ???
+    pEdges => pMatches => bEdges => bMatches => {
+      val (pLead, pTail) = subtractContinuousItems(pEdges)(pMatches)
+      val pPartialMatches = unequalEdges(pMatches)(bMatches)
+      val bPartialMatches = unequalEdges(bMatches)(pMatches)
+      val connsFromMatches = pPartialMatches.zip(bPartialMatches) map {
+        t =>
+          val (pEdge, bEdge) = t
+          if (pEdge.end == bEdge.start)
+            Edge(pEdge.start, bEdge.end)
+          else
+            Edge(bEdge.start, pEdge.end)
+      }
+      val edges = connectEdges(List(pLead, connsFromMatches, pTail))
+      logger.debug(s"after joinByFourMatches, the result is: $edges")
+      edges
+    }
+
+  import scalaz.Functor
+  import scalaz.std.option._
 
   val formPolygon: EDGES => EDGES => EDGES => EDGES => JOIN_EDGES => Option[Polygon] =
     pEdges => pMatches => bEdges => bMatches => joinByMatch =>
       joinByMatch(pEdges)(pMatches)(bEdges)(bMatches) flatMap {
         edges =>
-          val vertices =
-            (shiftPEdges andThen reduceEdges andThen (_.map(_.start)))(edges)
-          Some(Polygon(vertices: _*))
+          val compositeF =
+            shiftPEdges andThen reduceEdges andThen holeCheck andThen
+              Functor[Option].lift((_: EDGES).map(_.start))
+          compositeF(edges) map (Polygon(_: _*))
       }
 
   val merge: Polygon => Box => Option[Polygon] =
