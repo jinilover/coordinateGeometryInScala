@@ -198,8 +198,20 @@ object Geometry extends LazyLogging {
       edges
     }
 
+  /**
+   * check if the well-formed edges made a "hole"
+   */
   val holeCheck: EDGES => Option[EDGES] =
-    es => Some(es) // TODO
+    _.foldRight[Option[EDGES]](Some(List.empty[Edge])) {
+      (e, z) =>
+        z flatMap {
+          zVal =>
+            if (zVal exists (edge => edge.start == e.start && !sameEdges(edge)(e)))
+              None
+            else
+              Some(e :: zVal)
+        }
+    }
 
   /**
    * combine 2 colinear edges to 1
