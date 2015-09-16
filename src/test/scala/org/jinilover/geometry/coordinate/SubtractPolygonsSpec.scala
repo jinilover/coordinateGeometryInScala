@@ -3,6 +3,10 @@ package org.jinilover.geometry.coordinate
 import org.scalatest.{Matchers, FlatSpec}
 import GeometryFuncs._
 import PolygonFuncs._
+import org.scalacheck.{Properties, Prop}
+import Prop._
+import GeometryFuncs._
+import Generator._
 
 class SubtractPolygonsSpec extends FlatSpec with Matchers {
   val box = Box((3, 10), (13, 20))
