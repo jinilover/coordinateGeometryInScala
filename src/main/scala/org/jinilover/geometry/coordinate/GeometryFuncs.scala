@@ -62,11 +62,7 @@ object GeometryFuncs extends LazyLogging {
 
         bConns ++ pConns match {
           case Nil => None
-          case es =>
-            None //TODO
-          //            val composite =
-          //              rearrangeOutOfOrderEdges andThen combineColinearEdges andThen (_.map(_.start)) andThen (pts => Polygon(pts: _*))
-          //            Some(composite(es))
+          case es => Some((rearrangeOutOfOrderEdges andThen edgesToStartPts andThen createPolygon)(es))
         }
     }
   }

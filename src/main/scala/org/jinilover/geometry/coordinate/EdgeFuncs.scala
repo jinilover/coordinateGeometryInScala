@@ -182,6 +182,9 @@ object EdgeFuncs extends LazyLogging {
 
   val rearrangeOutOfOrderEdges: EDGES => EDGES =
     es => es //TODO
+  
+  val edgesToStartPts: EDGES => POINTS = 
+    _ map (_.start)
 
   def orientationDependent[T](edge: Edge)(h: => T)(v: => T): T =
     orient(edge) match {

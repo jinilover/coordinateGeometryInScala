@@ -65,6 +65,9 @@ object PolygonFuncs extends LazyLogging {
       (List(pLead, connsFromMatches, pTail), "joinByFourMatches")
     }
 
+  val createPolygon: POINTS => Polygon =
+    Polygon(_: _*)
+
   val polygonToEdges: Polygon => EDGES = {
     polygon =>
       val head :: tail = polygon.points.toList
@@ -76,7 +79,7 @@ object PolygonFuncs extends LazyLogging {
       (Edge(lastPt, head) :: edges).reverse
   }
 
-//  val boxToEdges: Box => EDGES = polygonToEdges(_)
+  //  val boxToEdges: Box => EDGES = polygonToEdges(_)
 
   val formPolygon: EDGES => EDGES => EDGES => EDGES => JOIN_EDGES => Option[Polygon] =
     pEdges => pMatches => bEdges => bMatches => joinEdgesF => {
@@ -87,12 +90,7 @@ object PolygonFuncs extends LazyLogging {
            |the resulting edges joined by $joinEdgesFuncName:
            |$edgesOpt
            |""".stripMargin)
-      edgesOpt map {
-        es =>
-          val composite =
-            shiftPEdges andThen combineColinearEdges andThen (_.map(_.start)) andThen (pts => Polygon(pts: _*))
-          composite(es)
-      }
+      edgesOpt map (shiftPEdges andThen combineColinearEdges andThen edgesToStartPts andThen createPolygon)
     }
 
   val combine: Polygon => Box => Option[Polygon] =
