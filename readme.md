@@ -13,9 +13,7 @@ This time the algorithm needs to find the co-ordinates of the 10 vertices of the
 
 Assumptions:
 * The blue rectangles do not form a polygon having a hole.
-* After subtracting the blue rectangles, there is a single polygon remains.
+* After subtracting the blue rectangles, there should be either no remained space or a single polygon.
+* There is overlapping between the blue rectangles
 
-The existing source code contains company-specific business.  Work is being done to extract a general mathematical algorithm w/o any company-related business logic.
-
-
-
+TODO: add more information about the basic ideas, how to use the api to calculate the space ...
