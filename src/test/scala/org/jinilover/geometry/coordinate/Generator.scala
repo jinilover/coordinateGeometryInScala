@@ -3,7 +3,7 @@ package org.jinilover.geometry.coordinate
 import org.scalacheck.Gen
 
 object Generator {
-  def boxRandomOrder[T](items: List[T]): Gen[List[T]] =
+  def randomList[T](items: List[T]): Gen[List[T]] =
     items.foldLeft(Gen.const(Nil: List[T])) {
       (genBoxes, b) =>
         for {

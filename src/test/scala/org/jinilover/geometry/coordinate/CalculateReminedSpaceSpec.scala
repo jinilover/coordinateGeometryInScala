@@ -14,7 +14,7 @@ class CalculateReminedSpaceSpec extends Properties("Calculate remained space alg
 
   property("subtract 2 boxes, 1 sticks to left, the other sticks to right") =
     forAll {
-      boxRandomOrder(List(
+      randomList(List(
         Box((3, 11), (7, 14)), Box((10, 15), (13, 18))
       ))
     } {
