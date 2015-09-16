@@ -3,7 +3,7 @@ package org.jinilover.geometry.coordinate
 import org.scalacheck.{Properties, Gen, Prop}
 import Prop._
 import GeometryFuncs._
-import UniteBoxesSpec._
+import Generator._
 
 class UniteBoxesSpec extends Properties("Unite boxes algorithm") {
   property("always combine the 3 specific boxes to the same single polygon regardless of the order") =
@@ -117,17 +117,5 @@ class UniteBoxesSpec extends Properties("Unite boxes algorithm") {
             (6, 0), (0, 0), (0, 17), (3, 17)
           )
         )
-    }
-}
-
-object UniteBoxesSpec {
-  val boxRandomOrder: BOXES => Gen[BOXES] =
-    boxes => boxes.foldLeft(Gen.const(Nil: BOXES)) {
-      (genBoxes, b) =>
-        for {
-          bs <- genBoxes
-          availBs = boxes diff bs
-          n <- Gen.choose(0, availBs.size - 1)
-        } yield availBs(n) :: bs
     }
 }

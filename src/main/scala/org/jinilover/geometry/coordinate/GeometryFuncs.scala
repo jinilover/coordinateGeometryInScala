@@ -73,4 +73,13 @@ object GeometryFuncs extends LazyLogging {
         }
     }
   }
+
+
+  /**
+   * Entry point to this coordinate geometry application
+   * Calculate the coordinate of the remaining space by subtracting boxes from bigBox
+   */
+  def calculateRemainedSpace(bigBox: Box)(boxes: Box*): Option[Polygon] =
+    subtract(bigBox)(unite(boxes: _*): _*)
+
 }
