@@ -111,7 +111,7 @@ object EdgeFuncs extends LazyLogging {
     es => es.filter(e => es.forall(_.end != e.start)).head
 
   /**
-   * pEdges is a polygon edges which are joined continuously,
+   * pEdges are in order to form a polygon,
    * but it may not start with the lowest horizontal edges,
    * shift the edges s.t. it starts with the lowest horizontal edges.
    */
@@ -126,7 +126,7 @@ object EdgeFuncs extends LazyLogging {
           }
       }
       val edges = shiftItems(pEdges)(_ == firstEdge)
-      logger.debug(s"pEdgesCounterClockWise: firstEdge = $firstEdge, edges = $edges")
+      logger.debug(s"shiftPEdges: firstEdge = $firstEdge, edges = $edges")
       edges
     }
 
@@ -180,10 +180,33 @@ object EdgeFuncs extends LazyLogging {
           List(Edge(longSt, shortSt), Edge(shortEd, longEd))
       }
 
+  val flipEdge: Edge => Edge =
+    e => Edge(e.end, e.start)
+
+  /**
+   * The given edges can form a polygon, but they are out of order,
+   * return the edges in order
+   */
   val rearrangeOutOfOrderEdges: EDGES => EDGES =
-    es => es //TODO
-  
-  val edgesToStartPts: EDGES => POINTS = 
+    es => {
+      @annotation.tailrec
+      def recur(inOrder: EDGES)(remains: EDGES): EDGES =
+        inOrder match {
+          case _ if inOrder.size == es.size => inOrder
+          case last :: _ =>
+            logger.debug(s"inOrder: $inOrder")
+            val next = remains.filter {
+              e => e.start == last.end || e.end == last.end
+            }.head
+            val newInOrder = (if (next.start == last.end) next else flipEdge(next)) :: inOrder
+            recur(newInOrder)(remains filterNot (_ == next))
+          case _ => recur(List(remains.head))(remains.tail)
+        }
+
+      recur(Nil)(es).reverse
+    }
+
+  val edgesToStartPts: EDGES => POINTS =
     _ map (_.start)
 
   def orientationDependent[T](edge: Edge)(h: => T)(v: => T): T =
