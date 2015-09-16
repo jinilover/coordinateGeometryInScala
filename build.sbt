@@ -10,9 +10,10 @@ val scalaTestV = "2.1.7"
 
 libraryDependencies ++= Seq(
   "org.scalaz" %% "scalaz-core" % scalazV,
-  "org.scalatest" %% "scalatest" % scalaTestV % "test",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.1.0",
-  "ch.qos.logback" % "logback-classic" % "1.1.2"
+  "ch.qos.logback" % "logback-classic" % "1.1.2",
+  "org.scalatest" %% "scalatest" % scalaTestV % "test",
+  "org.scalacheck" %% "scalacheck" % "1.12.2" % "test"
 )
 
 resolvers ++= Seq(
