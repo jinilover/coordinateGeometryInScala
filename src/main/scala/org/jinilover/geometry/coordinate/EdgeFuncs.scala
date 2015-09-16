@@ -194,7 +194,6 @@ object EdgeFuncs extends LazyLogging {
         inOrder match {
           case _ if inOrder.size == es.size => inOrder
           case last :: _ =>
-            logger.debug(s"inOrder: $inOrder")
             val next = remains.filter {
               e => e.start == last.end || e.end == last.end
             }.head

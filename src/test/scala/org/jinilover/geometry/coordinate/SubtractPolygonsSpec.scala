@@ -43,10 +43,8 @@ class SubtractPolygonsSpec extends Properties("Calculate remained space algorith
   property("subtract 4 boxes on each corner, form a cross") =
     forAll {
       randomList(List(
-        Box((3, 10), (7, 14)),
-        Box((3, 16), (7, 20)),
-        Box((9, 16), (13, 20)),
-        Box((9, 10), (13, 14))
+        Box((3, 10), (7, 14)),Box((3, 16), (7, 20)),
+        Box((9, 16), (13, 20)),Box((9, 10), (13, 14))
       ): List[Polygon])
     } {
       polys => subtract(box)(polys: _*) ==
