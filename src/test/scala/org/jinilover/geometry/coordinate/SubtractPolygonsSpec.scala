@@ -9,8 +9,7 @@ class SubtractPolygonsSpec extends FlatSpec with Matchers {
 
   it should "subtract 2 polygons, 1 sticks to left, the other sticks to right  " in {
     subtract(box)(
-      Polygon((3, 14), (7, 14), (7, 11), (3, 11)),
-      Polygon((10, 18), (13, 18), (13, 15), (10, 15))
+      Box((3, 11), (7, 14)), Box((10, 15), (13, 18))
     ) should be {
       Some(
         Polygon(
@@ -46,8 +45,25 @@ class SubtractPolygonsSpec extends FlatSpec with Matchers {
       )
     }
   }
-  
+
   it should "subtract the same size polygon, return None" in {
     subtract(box)(box) should be(None)
+  }
+
+  it should "subtract a polygon at bottom left, another that matches 3 edges" in {
+    subtract(box)(
+      Box((3, 13), (6, 20)),
+      Polygon(
+        (7, 20), (13, 20), (13, 10), (3, 10),
+        (3, 12), (11, 12), (11, 18), (7, 18)
+      )
+    ) should be {
+      Some(
+        Polygon(
+          (6, 20), (7, 20), (7, 18), (11, 18),
+          (11, 12), (3, 12), (3, 13), (6, 13)
+        )
+      )
+    }
   }
 }
