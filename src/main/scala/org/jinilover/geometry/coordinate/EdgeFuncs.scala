@@ -164,9 +164,24 @@ object EdgeFuncs extends LazyLogging {
     _.foldLeft[Option[EDGES]](Some(List.empty[Edge])) {
       (z, es) => z.flatMap(appendEdges(_)(es))
     }
-  
-  val rearrangeOutOfOrderEdges: EDGES => EDGES = 
-    es => es  //TODO
+
+  /**
+   * Both edges match and in the direction, returns remaining edges after longEdge - shortEdge
+   */
+  val cutEdges: Edge => Edge => EDGES =
+    longEdge => shortEdge =>
+      (longEdge, shortEdge) match {
+        case _ if sameEdges(longEdge)(shortEdge) => Nil
+        case (Edge(longSt, longEd), Edge(shortSt, shortEd)) if longSt == shortSt =>
+          List(Edge(shortEd, longEd))
+        case (Edge(longSt, longEd), Edge(shortSt, shortEd)) if longEd == shortEd =>
+          List(Edge(longSt, shortSt))
+        case (Edge(longSt, longEd), Edge(shortSt, shortEd)) =>
+          List(Edge(longSt, shortSt), Edge(shortEd, longEd))
+      }
+
+  val rearrangeOutOfOrderEdges: EDGES => EDGES =
+    es => es //TODO
 
   def orientationDependent[T](edge: Edge)(h: => T)(v: => T): T =
     orient(edge) match {
