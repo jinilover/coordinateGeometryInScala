@@ -68,7 +68,7 @@ object EdgeFuncs extends LazyLogging {
   val appendEdge: EDGES => Edge => Option[EDGES] =
     edges => edge =>
       edges match {
-        case es :+ e => join2Edges(e)(edge) map (es ++ _)
+        case es :+ lastEdge => join2Edges(lastEdge)(edge) map (es ++ _)
         case _ => Some(List(edge))
       }
 
@@ -157,10 +157,16 @@ object EdgeFuncs extends LazyLogging {
         }
     }
 
+  /**
+   * The given edges are in order, this function remove any zero length edge 
+   */
   val connectEdges: List[EDGES] => Option[EDGES] =
     _.foldLeft[Option[EDGES]](Some(List.empty[Edge])) {
       (z, es) => z.flatMap(appendEdges(_)(es))
     }
+  
+  val rearrangeOutOfOrderEdges: EDGES => EDGES = 
+    es => es  //TODO
 
   def orientationDependent[T](edge: Edge)(h: => T)(v: => T): T =
     orient(edge) match {

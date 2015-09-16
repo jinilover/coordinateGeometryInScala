@@ -22,7 +22,7 @@ class EdgeSpec  extends FlatSpec with Matchers {
   }
 
   it should "deduce a box's 4 edges correctly" in {
-    boxToEdges {
+    polygonToEdges {
       Box((2, 9), (6, 13))
     } should be {
       List(

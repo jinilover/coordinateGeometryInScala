@@ -6,6 +6,11 @@ import CommonFuncs._
 import EdgeFuncs._
 
 object PolygonFuncs extends LazyLogging {
+  implicit def toPolygon(box: Box): Polygon = {
+    val Box(tpLeft, btmRight) = box
+    Polygon((tpLeft.x, btmRight.y), btmRight, (btmRight.x, tpLeft.y), tpLeft)
+  }
+
   val joinBy1or2Matches: JOIN_EDGES =
     pEdges => pMatches => bEdges => bMatches => {
       val (pLead, pTail) = subtractItems(pEdges)(pMatches)
@@ -44,7 +49,7 @@ object PolygonFuncs extends LazyLogging {
     }
 
   val joinByFourMatches: JOIN_EDGES =
-    pEdges => pMatches => bEdges => bMatches => {
+    pEdges => pMatches => _ => bMatches => {
       val (pLead, pTail) = subtractItems(pEdges)(pMatches)
       val pPartialMatches = unequalEdges(pMatches)(bMatches)
       val bPartialMatches = unequalEdges(bMatches)(pMatches)
@@ -60,12 +65,6 @@ object PolygonFuncs extends LazyLogging {
       (List(pLead, connsFromMatches, pTail), "joinByFourMatches")
     }
 
-  val boxToPolygon: Box => Polygon = {
-    box =>
-      val Box(tpLeft, btmRight) = box
-      Polygon((tpLeft.x, btmRight.y), btmRight, (btmRight.x, tpLeft.y), tpLeft)
-  }
-
   val polygonToEdges: Polygon => EDGES = {
     polygon =>
       val head :: tail = polygon.points.toList
@@ -77,7 +76,7 @@ object PolygonFuncs extends LazyLogging {
       (Edge(lastPt, head) :: edges).reverse
   }
 
-  val boxToEdges: Box => EDGES = boxToPolygon andThen polygonToEdges
+//  val boxToEdges: Box => EDGES = polygonToEdges(_)
 
   val formPolygon: EDGES => EDGES => EDGES => EDGES => JOIN_EDGES => Option[Polygon] =
     pEdges => pMatches => bEdges => bMatches => joinEdgesF => {
@@ -99,7 +98,7 @@ object PolygonFuncs extends LazyLogging {
   val combine: Polygon => Box => Option[Polygon] =
     polygon => box => {
       val pEdges = polygonToEdges(polygon)
-      val bEdges = boxToEdges(box)
+      val bEdges = polygonToEdges(box)
       overlapEdges(pEdges)(bEdges) flatMap {
         t =>
           val (pMatches, bMatches) = t
