@@ -17,9 +17,7 @@ object PolygonFuncs extends LazyLogging {
       val (firstBMatch, lastBMatch) = firstLastItem(bMatches)
       val conn1 = List(Edge(firstPMatch.start, firstBMatch.end))
       val conn2 = List(Edge(lastBMatch.start, lastPMatch.end))
-      val edges = connectEdges(List(pLead, conn1, bRemains, conn2, pTail))
-      logger.debug(s"after joinBy ${pMatches.size} matching edges, the result is: $edges")
-      edges
+      (List(pLead, conn1, bRemains, conn2, pTail), s"${pMatches.size} matching edges")
     }
 
   val joinByThreeMatches: JOIN_EDGES =
@@ -42,9 +40,7 @@ object PolygonFuncs extends LazyLogging {
           val (pMatchFirst, pMatchLast) = firstLastItem(pPartialMatches)
           (List(Edge(pMatchFirst.start, bMatchFirst.end)), List(Edge(bMatchLast.start, pMatchLast.end)))
       }
-      val edges = connectEdges(List(pLead, conn1, bRemain, conn2, pTail))
-      logger.debug(s"after joinByThreeMatches, the result is: $edges")
-      edges
+      (List(pLead, conn1, bRemain, conn2, pTail), "joinByThreeMatches")
     }
 
   val joinByFourMatches: JOIN_EDGES =
@@ -61,9 +57,7 @@ object PolygonFuncs extends LazyLogging {
           }
         else
           List(Edge(pLead.last.end, pTail.head.start))
-      val edges = connectEdges(List(pLead, connsFromMatches, pTail))
-      logger.debug(s"after joinByFourMatches, the result is: $edges")
-      edges
+      (List(pLead, connsFromMatches, pTail), "joinByFourMatches")
     }
 
   val boxToPolygon: Box => Polygon = {
@@ -86,13 +80,21 @@ object PolygonFuncs extends LazyLogging {
   val boxToEdges: Box => EDGES = boxToPolygon andThen polygonToEdges
 
   val formPolygon: EDGES => EDGES => EDGES => EDGES => JOIN_EDGES => Option[Polygon] =
-    pEdges => pMatches => bEdges => bMatches => 
-      _(pEdges)(pMatches)(bEdges)(bMatches) flatMap {
-        edges =>
+    pEdges => pMatches => bEdges => bMatches => joinEdgesF => {
+      val (edgesList, joinEdgesFuncName) = joinEdgesF(pEdges)(pMatches)(bEdges)(bMatches)
+      val edgesOpt = connectEdges(edgesList)
+      logger.debug(
+        s"""
+           |the resulting edges joined by $joinEdgesFuncName:
+           |$edgesOpt
+           |""".stripMargin)
+      edgesOpt map {
+        es =>
           val composite =
-            shiftPEdges andThen combineColinearEdges andThen (_.map(_.start)) andThen (pts => Some(Polygon(pts: _*)))
-          composite(edges)
+            shiftPEdges andThen combineColinearEdges andThen (_.map(_.start)) andThen (pts => Polygon(pts: _*))
+          composite(es)
       }
+    }
 
   val combine: Polygon => Box => Option[Polygon] =
     polygon => box => {
