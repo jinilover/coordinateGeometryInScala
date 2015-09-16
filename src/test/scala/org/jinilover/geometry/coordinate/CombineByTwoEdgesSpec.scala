@@ -5,8 +5,8 @@ import PolygonFuncs._
 
 import scala.language.postfixOps
 
-class MergeTwoEdgesSpec extends FlatSpec with Matchers {
-  it should "merge a poly with a top right big box" in {
+class CombineByTwoEdgesSpec extends FlatSpec with Matchers {
+  it should "combine a poly with a top right big box" in {
     combine {
       Polygon((3, 17), (9, 17), (9, 14), (6, 14), (6, 11), (3, 11))
     } {
@@ -18,7 +18,7 @@ class MergeTwoEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "merge a poly with a bottom right big box" in {
+  it should "combine a poly with a bottom right big box" in {
     combine {
       Polygon((3, 17), (7, 17), (7, 15), (10, 15), (10, 12), (3, 12))
     } {
@@ -30,7 +30,7 @@ class MergeTwoEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "merge a poly with a bottom left big box" in {
+  it should "combine a poly with a bottom left big box" in {
     combine {
       Polygon((8, 18), (11, 18), (11, 13), (6, 13), (6, 16), (8, 16))
     } {
@@ -42,7 +42,7 @@ class MergeTwoEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "merge a poly with a top left big box" in {
+  it should "combine a poly with a top left big box" in {
     combine {
       Polygon((3, 20), (11, 20), (11, 14), (7, 14), (7, 17), (3, 17))
     } {
@@ -54,7 +54,7 @@ class MergeTwoEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "merge a poly with a top right box to form a rectangle" in {
+  it should "combine a poly with a top right box to form a rectangle" in {
     combine {
       Polygon((4, 10), (9, 10), (9, 8), (6, 8), (6, 5), (4, 5))
     } {
@@ -66,7 +66,7 @@ class MergeTwoEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "merge a poly with a bottom right box to form a rectangle" in {
+  it should "combine a poly with a bottom right box to form a rectangle" in {
     combine {
       Polygon((4, 10), (6, 10), (6, 7), (9, 7), (9, 5), (4, 5))
     } {
@@ -78,7 +78,7 @@ class MergeTwoEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "merge a poly with a bottom left box to form a rectangle" in {
+  it should "combine a poly with a bottom left box to form a rectangle" in {
     combine {
       Polygon((7, 10), (9, 10), (9, 5), (4, 5), (4, 7), (7, 7))
     } {
@@ -90,7 +90,7 @@ class MergeTwoEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "merge a poly with a top left box to form a rectangle" in {
+  it should "combine a poly with a top left box to form a rectangle" in {
     combine {
       Polygon((4, 10), (9, 10), (9, 5), (7, 5), (7, 8), (4, 8))
     } {
@@ -102,7 +102,7 @@ class MergeTwoEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "merge a poly with a top right small box" in {
+  it should "combine a poly with a top right small box" in {
     combine {
       Polygon((4, 10), (9, 10), (9, 8), (6, 8), (6, 5), (4, 5))
     } {
@@ -114,7 +114,7 @@ class MergeTwoEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "merge a poly with a bottom right small box" in {
+  it should "combine a poly with a bottom right small box" in {
     combine {
       Polygon((4, 10), (6, 10), (6, 7), (9, 7), (9, 5), (4, 5))
     } {
@@ -126,7 +126,7 @@ class MergeTwoEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "merge a poly with a bottom left small box" in {
+  it should "combine a poly with a bottom left small box" in {
     combine {
       Polygon((7, 10), (9, 10), (9, 5), (4, 5), (4, 7), (7, 7))
     } {
@@ -138,7 +138,7 @@ class MergeTwoEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "merge a poly with a top left small box" in {
+  it should "combine a poly with a top left small box" in {
     combine {
       Polygon((4, 10), (9, 10), (9, 5), (7, 5), (7, 7), (4, 7))
     } {

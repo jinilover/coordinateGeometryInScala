@@ -11,7 +11,7 @@ object GeometryFuncs {
     import scalaz.LastOption
     import scalaz.Tags._
 
-    lazy val mergeBoxesToPolygon: BOXES => Polygon => POLYGONS =
+    lazy val combineBoxesToPolygon: BOXES => Polygon => POLYGONS =
       origBoxes => origPoly => {
         val (newPoly, remainedBoxes) = origBoxes.foldLeft(
           (Last(Some(origPoly)): LastOption[Polygon], mzero[BOXES])
@@ -28,12 +28,13 @@ object GeometryFuncs {
           origPoly :: unite(remainedBoxes: _*)
         else
           Last.unwrap(newPoly).map {
-            mergeBoxesToPolygon(remainedBoxes)
+            combineBoxesToPolygon(remainedBoxes
+            )
           }.toList.flatten
       }
 
     boxes.toList match {
-      case b :: bs => mergeBoxesToPolygon(bs)(boxToPolygon(b))
+      case b :: bs => combineBoxesToPolygon(bs)(boxToPolygon(b))
       case _ => Nil
     }
   }

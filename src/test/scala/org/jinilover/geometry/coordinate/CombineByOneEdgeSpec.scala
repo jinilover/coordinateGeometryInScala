@@ -5,8 +5,8 @@ import PolygonFuncs._
 
 import scala.language.postfixOps
 
-class MergeOneEdgeSpec extends FlatSpec with Matchers {
-  it should "merge a poly with a box with a horizontal edge, the right is higher" in {
+class CombineByOneEdgeSpec extends FlatSpec with Matchers {
+  it should "combine a poly with a box with a horizontal edge, the right is higher" in {
     val expectedPoly = Polygon((2, 13), (6, 13), (6, 10), (12, 10), (12, 6), (6, 6), (6, 9), (2, 9))
 
     combine {
@@ -27,7 +27,7 @@ class MergeOneEdgeSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "merge a poly with a box with a horizontal edge, the left is higher" in {
+  it should "combine a poly with a box with a horizontal edge, the left is higher" in {
     val expectedPoly = Polygon((9, 10), (13, 10), (13, 6), (9, 6), (9, 4), (5, 4), (5, 8), (9, 8))
 
     combine {
@@ -48,7 +48,7 @@ class MergeOneEdgeSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "merge a poly with a box with a vertical edge, the top is lefter" in {
+  it should "combine a poly with a box with a vertical edge, the top is lefter" in {
     val expectedPoly = Polygon((5, 10), (10, 10), (10, 7), (7, 7), (7, 4), (3, 4), (3, 7), (5, 7))
 
     combine {
@@ -69,7 +69,7 @@ class MergeOneEdgeSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "merge a poly with a box with a vertical edge, the top is righter" in {
+  it should "combine a poly with a box with a vertical edge, the top is righter" in {
     val expectedPoly = Polygon((6, 10), (11, 10), (11, 7), (14, 7), (14, 4), (9, 4), (9, 7), (6, 7))
 
     combine {

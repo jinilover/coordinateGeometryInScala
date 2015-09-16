@@ -6,7 +6,7 @@ import PolygonFuncs._
 /**
  * Test if the algo can decide not to match the polygon due to no edge matching 
  */
-class CannotMergeSpec extends FlatSpec with Matchers {
+class CannotCombineSpec extends FlatSpec with Matchers {
   it should "no matching edge" in {
     combine {
       Polygon((2, 13), (6, 13), (6, 9), (2, 9))

@@ -3,7 +3,7 @@ package org.jinilover.geometry.coordinate
 import org.jinilover.geometry.coordinate.PolygonFuncs._
 import org.scalatest.{Matchers, FlatSpec}
 
-class MergeFourEdgesSpec extends FlatSpec with Matchers {
+class CombineByFourEdgesSpec extends FlatSpec with Matchers {
   it should "1 box edge not covered by the polygon's correspondant, the 'opening' faces the the bottom" in {
     combine {
       Polygon(

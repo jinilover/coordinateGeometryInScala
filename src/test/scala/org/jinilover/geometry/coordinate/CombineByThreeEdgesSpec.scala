@@ -3,8 +3,8 @@ package org.jinilover.geometry.coordinate
 import org.jinilover.geometry.coordinate.PolygonFuncs._
 import org.scalatest.{Matchers, FlatSpec}
 
-class MergeThreeEdgesSpec extends FlatSpec with Matchers {
-  it should "merge to form 'T'" in {
+class CombineByThreeEdgesSpec extends FlatSpec with Matchers {
+  it should "combine to form 'T'" in {
     combine {
       Polygon(
         (3, 10), (6, 10), (6, 8), (10, 8),
@@ -22,7 +22,7 @@ class MergeThreeEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "merge to form 'T' clockwise 90deg" in {
+  it should "combine to form 'T' clockwise 90deg" in {
     combine {
       Polygon(
         (9, 20), (13, 20), (13, 8), (9, 8),
@@ -40,7 +40,7 @@ class MergeThreeEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "merge to form 'T' inverted" in {
+  it should "combine to form 'T' inverted" in {
     combine {
       Polygon(
         (3, 10), (12, 10), (12, 5), (10, 5),
@@ -58,7 +58,7 @@ class MergeThreeEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "merge to form 'T' counter clockwise 90deg" in {
+  it should "combine to form 'T' counter clockwise 90deg" in {
     combine {
       Polygon(
         (3, 20), (11, 20), (11, 17), (8, 17),
@@ -76,7 +76,7 @@ class MergeThreeEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "merge with a bottom box to form a rectangle, i.e. all matched edges same lengths as polygon's correspondants" in {
+  it should "combine with a bottom box to form a rectangle, i.e. all matched edges same lengths as polygon's correspondants" in {
     combine {
       Polygon(
         (3, 10), (6, 10), (6, 8), (10, 8),
@@ -91,7 +91,7 @@ class MergeThreeEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "merge with a left box to form a rectangle, i.e. all matched edges same lengths as polygon's correspondants" in {
+  it should "combine with a left box to form a rectangle, i.e. all matched edges same lengths as polygon's correspondants" in {
     combine {
       Polygon(
         (9, 20), (13, 20), (13, 8), (9, 8),
@@ -106,7 +106,7 @@ class MergeThreeEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "merge with a top box to form a rectangle, i.e. all matched edges same lengths as polygon's correspondants" in {
+  it should "combine with a top box to form a rectangle, i.e. all matched edges same lengths as polygon's correspondants" in {
     combine {
       Polygon(
         (3, 10), (12, 10), (12, 5), (10, 5),
@@ -121,7 +121,7 @@ class MergeThreeEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "merge with a right box to form a rectangle, i.e. all matched edges same lengths as polygon's correspondants" in {
+  it should "combine with a right box to form a rectangle, i.e. all matched edges same lengths as polygon's correspondants" in {
     combine {
       Polygon(
         (3, 20), (11, 20), (11, 17), (8, 17),
@@ -136,7 +136,7 @@ class MergeThreeEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "similar to merge to form 'T' except the right poly horizontal edge levels with the box's" in {
+  it should "similar to combine to form 'T' except the right poly horizontal edge levels with the box's" in {
     combine {
       Polygon(
         (3, 10), (6, 10), (6, 8), (10, 8),
@@ -153,7 +153,7 @@ class MergeThreeEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "similar to merge to form 'T' except the left poly horizontal edge levels with the box's" in {
+  it should "similar to combine to form 'T' except the left poly horizontal edge levels with the box's" in {
     combine {
       Polygon(
         (3, 12), (6, 12), (6, 8), (10, 8),
@@ -170,7 +170,7 @@ class MergeThreeEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "similar to merge to form 'T' clockwise 90deg except the bottom poly vertical edge levels with the box's" in {
+  it should "similar to combine to form 'T' clockwise 90deg except the bottom poly vertical edge levels with the box's" in {
     combine {
       Polygon(
         (5, 20), (13, 20), (13, 8), (9, 8),
@@ -187,7 +187,7 @@ class MergeThreeEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "similar to merge to form 'T' clockwise 90deg except the top poly vertical edge levels with the box's" in {
+  it should "similar to combine to form 'T' clockwise 90deg except the top poly vertical edge levels with the box's" in {
     combine {
       Polygon(
         (9, 20), (13, 20), (13, 8), (5, 8),
@@ -204,7 +204,7 @@ class MergeThreeEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "similar to merge to form 'T' inverted except the right poly horizontal edge levels with the box's" in {
+  it should "similar to combine to form 'T' inverted except the right poly horizontal edge levels with the box's" in {
     combine {
       Polygon(
         (3, 10), (12, 10), (12, 2), (10, 2),
@@ -221,7 +221,7 @@ class MergeThreeEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "similar to merge to form 'T' inverted except the left poly horizontal edge levels with the box's" in {
+  it should "similar to combine to form 'T' inverted except the left poly horizontal edge levels with the box's" in {
     combine {
       Polygon(
         (3, 10), (12, 10), (12, 5), (10, 5),
@@ -238,7 +238,7 @@ class MergeThreeEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "similar to merge to form 'T' counter clockwise 90deg except the bottom poly vertical edge levels with the box's" in {
+  it should "similar to combine to form 'T' counter clockwise 90deg except the bottom poly vertical edge levels with the box's" in {
     combine {
       Polygon(
         (3, 20), (13, 20), (13, 17), (8, 17),
@@ -255,7 +255,7 @@ class MergeThreeEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "similar to merge to form 'T' counter clockwise 90deg except the top poly vertical edge levels with the box's" in {
+  it should "similar to combine to form 'T' counter clockwise 90deg except the top poly vertical edge levels with the box's" in {
     combine {
       Polygon(
         (3, 20), (11, 20), (11, 17), (8, 17),
@@ -272,7 +272,7 @@ class MergeThreeEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "similar to merge to form 'T' except both poly horizontal edges lower than the box's" in {
+  it should "similar to combine to form 'T' except both poly horizontal edges lower than the box's" in {
     combine {
       Polygon(
         (3, 13), (6, 13), (6, 8), (10, 8),
@@ -290,7 +290,7 @@ class MergeThreeEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "similar to merge to form 'T' clockwise 90deg except both poly vertical edges lefter than the box's" in {
+  it should "similar to combine to form 'T' clockwise 90deg except both poly vertical edges lefter than the box's" in {
     combine {
       Polygon(
         (4, 20), (13, 20), (13, 8), (4, 8),
@@ -308,7 +308,7 @@ class MergeThreeEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "similar merge to form 'T' inverted except both poly horizontal edges higher than the box's" in {
+  it should "similar combine to form 'T' inverted except both poly horizontal edges higher than the box's" in {
     combine {
       Polygon(
         (3, 10), (12, 10), (12, 1), (10, 1),
@@ -326,7 +326,7 @@ class MergeThreeEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "similar to merge to form 'T' counter clockwise 90deg except both poly vertical edges righter than the box's" in {
+  it should "similar to combine to form 'T' counter clockwise 90deg except both poly vertical edges righter than the box's" in {
     combine {
       Polygon(
         (3, 20), (14, 20), (14, 17), (8, 17),
@@ -344,7 +344,7 @@ class MergeThreeEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "similar to merge to form 'T' except the right poly horizontal edge lower than the box's" in {
+  it should "similar to combine to form 'T' except the right poly horizontal edge lower than the box's" in {
     combine {
       Polygon(
         (3, 10), (6, 10), (6, 8), (10, 8),
@@ -362,7 +362,7 @@ class MergeThreeEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "similar to merge to form 'T' except the left poly horizontal edge lower than the box's" in {
+  it should "similar to combine to form 'T' except the left poly horizontal edge lower than the box's" in {
     combine {
       Polygon(
         (3, 13), (6, 13), (6, 8), (10, 8),
@@ -380,7 +380,7 @@ class MergeThreeEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "similar to merge to form 'T' clockwise 90deg except the bottom poly vertical edge lefter than the box's" in {
+  it should "similar to combine to form 'T' clockwise 90deg except the bottom poly vertical edge lefter than the box's" in {
     combine {
       Polygon(
         (4, 20), (13, 20), (13, 8), (9, 8),
@@ -398,7 +398,7 @@ class MergeThreeEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "similar to merge to form 'T' clockwise 90deg except the top poly vertical edge lefter than the box's" in {
+  it should "similar to combine to form 'T' clockwise 90deg except the top poly vertical edge lefter than the box's" in {
     combine {
       Polygon(
         (9, 20), (13, 20), (13, 8), (4, 8),
@@ -416,7 +416,7 @@ class MergeThreeEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "similar to merge to form 'T' inverted except the right poly horizontal edge higher than the box's" in {
+  it should "similar to combine to form 'T' inverted except the right poly horizontal edge higher than the box's" in {
     combine {
       Polygon(
         (3, 10), (12, 10), (12, 1), (10, 1),
@@ -434,7 +434,7 @@ class MergeThreeEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "similar to merge to form 'T' inverted except the left poly horizontal edge higher than the box's" in {
+  it should "similar to combine to form 'T' inverted except the left poly horizontal edge higher than the box's" in {
     combine {
       Polygon(
         (3, 10), (12, 10), (12, 5), (10, 5),
@@ -452,7 +452,7 @@ class MergeThreeEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "similar to merge to form 'T' counter clockwise 90deg except the bottom poly vertical edge righter than the box's" in {
+  it should "similar to combine to form 'T' counter clockwise 90deg except the bottom poly vertical edge righter than the box's" in {
     combine {
       Polygon(
         (3, 20), (14, 20), (14, 17), (8, 17),
@@ -470,7 +470,7 @@ class MergeThreeEdgesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "similar to merge to form 'T' counter clockwise 90deg except the top poly vertical edge righter than the box's" in {
+  it should "similar to combine to form 'T' counter clockwise 90deg except the top poly vertical edge righter than the box's" in {
     combine {
       Polygon(
         (3, 20), (11, 20), (11, 17), (8, 17),
