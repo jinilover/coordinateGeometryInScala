@@ -87,4 +87,45 @@ class CalculateReminedSpaceSpec extends Properties("Calculate remained space alg
             )
           )
     }
+
+  val page = Box((0, 0), (17, 19))
+
+  property("simulate calculation of the yellow region in readme.md's diagram 1") =
+    forAll {
+      randomList(List(
+        Box((6, 11), (9, 19)), Box((15, 11), (17, 19)),
+        Box((0, 0), (17, 3)), Box((0, 9), (3, 14)),
+        Box((13, 11), (15, 19)), Box((9, 11), (13, 19)),
+        Box((3, 11), (6, 19)), Box((0, 14), (3, 19))
+      ))
+    } {
+      boxes =>
+        calculateRemainedSpace(page)(boxes: _*) ==
+          Some(
+            Polygon(
+              (3, 11), (17, 11), (17, 3), (0, 3),
+              (0, 9), (3, 9)
+            )
+          )
+    }
+
+  property("simulate calculation of the yellow region in readme.md's diagram 2") =
+    forAll {
+      randomList(List(
+        Box((15, 7), (16, 19)), Box((0, 0), (17, 3)),
+        Box((4, 9), (8, 19)), Box((0, 9), (4, 14)),
+        Box((8, 7), (11, 19)), Box((16, 3), (17, 19)),
+        Box((11, 10), (15, 19)), Box((0, 14), (4, 19))
+      ))
+    } {
+      boxes =>
+        calculateRemainedSpace(page)(boxes: _*) ==
+          Some(
+            Polygon(
+              (11, 10), (15, 10), (15, 7), (16, 7),
+              (16, 3), (0, 3), (0, 9), (8, 9),
+              (8, 7), (11, 7)
+            )
+          )
+    }
 }
