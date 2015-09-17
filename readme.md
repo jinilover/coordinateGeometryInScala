@@ -45,7 +45,7 @@ scala> calculateRemainedSpace(page)(boxes: _*)
 res0: Option[org.jinilover.geometry.coordinate.Polygon] = Some(Polygon(List(Point(3,11), Point(17,11), Point(17,3), Point(0,3), Point(0,9), Point(3,9))))
 
 ```
-To simulate the diagram 1, under the REPL, type the following command
+To simulate the diagram 2, under the REPL, type the following command
 ```Scala
 scala> val boxes = List(
      |         Box((15, 7), (16, 19)), Box((0, 0), (17, 3)),
