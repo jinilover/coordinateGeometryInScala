@@ -18,8 +18,8 @@ Assumptions:
 
 ##Coordinates setting
 * The top left coordinates is (0, 0).  
-* The polygon vertices are presented in a list of (x, y), counter clock wise mannger.  The first vertice is the left (starting) point of the lowest horizontal line.  E.g. in the first diagram, the yellow region vertices are (3, 11), (17, 11), (17, 3), (0, 3), (0, 9), (3, 9).
-* A rectangle vertices are presented by topLeft and bottomRight corner.  E.g. in the first diagram, the blue rectangle 3 topLeft/bottomRight are (0, 0), (17, 3).
+* The polygon vertices are presented in a list of (x, y), counter clockwise manner.  The first vertice is the left end of the bottom horizontal line.  E.g. in the first diagram, the yellow region vertices are (3, 11), (17, 11), (17, 3), (0, 3), (0, 9), (3, 9).
+* A rectangle vertices are presented by topLeft and bottomRight corner.  E.g. in the first diagram, the blue rectangle #3 vertices are presented as (0, 0), (17, 3).
 
 ##API usage
 To simulate the diagram 1, under the REPL, type the following command
