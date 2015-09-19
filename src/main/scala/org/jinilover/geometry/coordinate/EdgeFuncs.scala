@@ -54,7 +54,6 @@ object EdgeFuncs extends LazyLogging {
 
   /**
    * join 2 edges, return None if they can't be join, return Some(List[EdgeFP]) where
-   * the list size is 1 if these 2 edges are colinear
    */
   val join2Edges: Edge => Edge => Option[EDGES] =
     e1 => e2 =>
@@ -168,11 +167,15 @@ object EdgeFuncs extends LazyLogging {
   val flipEdge: Edge => Edge = e => Edge(e.end, e.start)
 
   /**
-   * The given edges can form a polygon, but they are out of order,
-   * return the edges in order
+   * The given edges can form a polygon or more than 1 polygon, 
+   * but they are out of order and mixed together if they can form different polygons,
+   * separate them which belong to different polygons, within each list, 
+   * rearrange them in order
+   * firstEdges are es subset, in separating es to different list that form 
+   * different polygons, the first edge of each list must exist in firstEdges.
    */
   val rearrangeOutOfOrderEdges: EDGES => EDGES => List[EDGES] =
-    bEdges => es => {
+    firstEdges => es => {
       def recur(inOrder: EDGES)(remains: EDGES): List[EDGES] =
         (inOrder, remains) match {
           case (Nil, Nil) => Nil
@@ -186,15 +189,14 @@ object EdgeFuncs extends LazyLogging {
             val newInOrder = (if (next.start == last.end) next else flipEdge(next)) :: inOrder
             recur(newInOrder)(remains filterNot (_ == next))
           case _ =>
-            val firstEdge = remains.filter(r => bEdges exists (_ == r)).head
+            val firstEdge = remains.filter(r => firstEdges exists (_ == r)).head
             recur(List(firstEdge))(remains filterNot (_ == firstEdge))
         }
 
       recur(Nil)(es) map (_.reverse)
     }
 
-  val edgesToStartPts: EDGES => POINTS =
-    _ map (_.start)
+  val edgesToStartPts: EDGES => POINTS = _ map (_.start)
 
   def orientationDependent[T](edge: Edge)(h: => T)(v: => T): T =
     orient(edge) match {
