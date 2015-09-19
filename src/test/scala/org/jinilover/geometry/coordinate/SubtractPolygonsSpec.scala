@@ -18,7 +18,7 @@ class SubtractPolygonsSpec extends Properties("Calculate remained space algorith
       ): List[Polygon])
     } {
       polys => subtract(box)(polys: _*) ==
-        Some(
+        List(
           Polygon(
             (3, 20), (13, 20), (13, 18), (10, 18),
             (10, 15), (13, 15), (13, 10), (3, 10),
@@ -37,18 +37,18 @@ class SubtractPolygonsSpec extends Properties("Calculate remained space algorith
       ))
     } {
       polys => subtract(box)(polys: _*) ==
-        Some(Polygon((5, 18), (13, 18), (13, 10), (5, 10)))
+        List(Polygon((5, 18), (13, 18), (13, 10), (5, 10)))
     }
 
   property("subtract 4 boxes on each corner, form a cross") =
     forAll {
       randomList(List(
-        Box((3, 10), (7, 14)),Box((3, 16), (7, 20)),
-        Box((9, 16), (13, 20)),Box((9, 10), (13, 14))
+        Box((3, 10), (7, 14)), Box((3, 16), (7, 20)),
+        Box((9, 16), (13, 20)), Box((9, 10), (13, 14))
       ): List[Polygon])
     } {
       polys => subtract(box)(polys: _*) ==
-        Some(
+        List(
           Polygon(
             (7, 20), (9, 20), (9, 16), (13, 16),
             (13, 14), (9, 14), (9, 10), (7, 10),
@@ -57,11 +57,29 @@ class SubtractPolygonsSpec extends Properties("Calculate remained space algorith
         )
     }
 
+  // inverse of last case
+  property("subtract a cross, 4 boxes remain on each corner") =
+    forAll {
+      randomList(List(
+        Polygon(
+          (7, 20), (9, 20), (9, 16), (13, 16),
+          (13, 14), (9, 14), (9, 10), (7, 10),
+          (7, 14), (3, 14), (3, 16), (7, 16)
+        )
+      ))
+    } {
+      polys => subtract(box)(polys: _*).toSet ==
+        (List(
+          Box((3, 10), (7, 14)), Box((3, 16), (7, 20)),
+          Box((9, 16), (13, 20)), Box((9, 10), (13, 14))
+        ): List[Polygon]).toSet
+    }
+
   property("subtract the same size polygon, return None") =
     forAll {
       randomList(List(box): List[Polygon])
     } {
-      polys => subtract(box)(polys: _*) == None
+      polys => subtract(box)(polys: _*) == Nil
     }
 
   property("subtract a polygon at bottom left, another that matches 3 edges") =
@@ -75,7 +93,7 @@ class SubtractPolygonsSpec extends Properties("Calculate remained space algorith
       ): List[Polygon])
     } {
       polys => subtract(box)(polys: _*) ==
-        Some(
+        List(
           Polygon(
             (6, 20), (7, 20), (7, 18), (11, 18),
             (11, 12), (3, 12), (3, 13), (6, 13)

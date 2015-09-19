@@ -115,7 +115,7 @@ object EdgeFuncs extends LazyLogging {
    * but it may not start with the lowest horizontal edges,
    * shift the edges s.t. it starts with the lowest horizontal edges.
    */
-  val shiftPEdges: EDGES => EDGES =
+  val shiftOrderedEdges: EDGES => EDGES =
     pEdges => {
       val firstEdge = pEdges reduceLeft {
         (e1, e2) =>
@@ -128,21 +128,6 @@ object EdgeFuncs extends LazyLogging {
       val edges = shiftItems(pEdges)(_ == firstEdge)
       logger.debug(s"shiftPEdges: firstEdge = $firstEdge, edges = $edges")
       edges
-    }
-
-  /**
-   * check if the well-formed edges made a "hole"
-   */
-  val holeCheck: EDGES => Option[EDGES] =
-    _.foldRight[Option[EDGES]](Some(List.empty[Edge])) {
-      (e, z) =>
-        z flatMap {
-          zVal =>
-            if (zVal exists (edge => edge.start == e.start && !sameEdges(edge)(e)))
-              None
-            else
-              Some(e :: zVal)
-        }
     }
 
   /**
@@ -180,29 +165,32 @@ object EdgeFuncs extends LazyLogging {
           List(Edge(longSt, shortSt), Edge(shortEd, longEd))
       }
 
-  val flipEdge: Edge => Edge =
-    e => Edge(e.end, e.start)
+  val flipEdge: Edge => Edge = e => Edge(e.end, e.start)
 
   /**
    * The given edges can form a polygon, but they are out of order,
    * return the edges in order
    */
-  val rearrangeOutOfOrderEdges: EDGES => EDGES =
-    es => {
-      @annotation.tailrec
-      def recur(inOrder: EDGES)(remains: EDGES): EDGES =
-        inOrder match {
-          case _ if inOrder.size == es.size => inOrder
-          case last :: _ =>
+  val rearrangeOutOfOrderEdges: EDGES => EDGES => List[EDGES] =
+    bEdges => es => {
+      def recur(inOrder: EDGES)(remains: EDGES): List[EDGES] =
+        (inOrder, remains) match {
+          case (Nil, Nil) => Nil
+          case (_, Nil) => List(inOrder)
+          case (last :: (_ :+ first), _) if last.end == first.start =>
+            inOrder :: recur(Nil)(remains)
+          case (last :: _, _) =>
             val next = remains.filter {
               e => e.start == last.end || e.end == last.end
             }.head
             val newInOrder = (if (next.start == last.end) next else flipEdge(next)) :: inOrder
             recur(newInOrder)(remains filterNot (_ == next))
-          case _ => recur(List(remains.head))(remains.tail)
+          case _ =>
+            val firstEdge = remains.filter(r => bEdges exists (_ == r)).head
+            recur(List(firstEdge))(remains filterNot (_ == firstEdge))
         }
 
-      recur(Nil)(es).reverse
+      recur(Nil)(es) map (_.reverse)
     }
 
   val edgesToStartPts: EDGES => POINTS =

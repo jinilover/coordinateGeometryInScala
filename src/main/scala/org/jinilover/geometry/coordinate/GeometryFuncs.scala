@@ -40,10 +40,10 @@ object GeometryFuncs extends LazyLogging {
     }
   }
 
-  def subtract(box: Box)(polySeq: Polygon*): Option[Polygon] = {
+  def subtract(box: Box)(polySeq: Polygon*): List[Polygon] = {
     val polys = polySeq.toList
     polys match {
-      case Nil => Some(box)
+      case Nil => Nil
       case _ =>
         // bConns are box's fragmented edges after subtracting the portion that matches with polygon edges
         // pConns are the polygons not matching with any box edge
@@ -60,11 +60,14 @@ object GeometryFuncs extends LazyLogging {
           }
         }
 
+        import scalaz.Kleisli._
+        import scalaz.std.list._
         bConns ++ pConns match {
-          case Nil => None
+          case Nil => Nil
           case es =>
-            val composite = rearrangeOutOfOrderEdges andThen shiftPEdges andThen edgesToStartPts andThen createPolygon
-            Some(composite(es))
+            val composite =
+              kleisli(rearrangeOutOfOrderEdges(bConns)) map (shiftOrderedEdges andThen edgesToStartPts andThen createPolygon)
+            composite run es
         }
     }
   }
@@ -74,7 +77,7 @@ object GeometryFuncs extends LazyLogging {
    * Entry point to this coordinate geometry application
    * Calculate the coordinate of the remaining space by subtracting boxes from bigBox
    */
-  def calculateRemainedSpace(bigBox: Box)(boxes: Box*): Option[Polygon] =
+  def calculateRemainedSpace(bigBox: Box)(boxes: Box*): List[Polygon] =
     subtract(bigBox)(unite(boxes: _*): _*)
 
 }
