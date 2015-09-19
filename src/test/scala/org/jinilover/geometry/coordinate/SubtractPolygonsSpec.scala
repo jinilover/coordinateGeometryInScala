@@ -40,6 +40,32 @@ class SubtractPolygonsSpec extends Properties("Calculate remained space algorith
         List(Polygon((5, 18), (13, 18), (13, 10), (5, 10)))
     }
 
+  //similar to last test, subtract 1 more 'L' on the top right corner
+  property("subtract an 'L' and 1 more on the top right corner") =
+    forAll {
+      randomList(List(
+        Polygon(
+          (3, 20), (13, 20), (13, 18), (5, 18),
+          (5, 10), (3, 10)
+        ),
+        Polygon(
+          (7, 15), (13, 15), (13, 13), (9, 13),
+          (9, 10), (7, 10)
+        )
+      ))
+    } {
+      polys => subtract(box)(polys: _*).toSet ==
+        List(
+          Polygon(
+            (5, 18), (13, 18), (13, 15), (7, 15),
+            (7, 10), (5, 10)
+          ),
+          Polygon(
+            (9, 13), (13, 13), (13, 10), (9, 10)
+          )
+        ).toSet
+    }
+
   property("subtract 4 boxes on each corner, form a cross") =
     forAll {
       randomList(List(
