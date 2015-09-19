@@ -11,9 +11,14 @@ Here is another example.
 
 This time the algorithm needs to find the co-ordinates of the 10 vertices of the yellow polygon.
 
-Assumptions:
+![Alt text](https://github.com/jinilover/images/blob/master/Polygon3.png)  
+
+There can be more than one polygon remained after subtraction.  In the above diagram, it calculates the 4 vertices of the 4 yellow polygons.
+
+##Assumptions:
 * The blue rectangles do not form a polygon having a hole.
-* After subtracting the blue rectangles, there should be either no remained space or a single polygon.
+* The blue rectangles are inside the outermost rectangle.
+* Each blue rectangle has at least 1 edge attaching to the outermost rectangle's edges.
 * There is no overlapping between the blue rectangles
 
 ##Coordinates setting
@@ -42,11 +47,14 @@ scala> val boxes = List(
 boxes: List[org.jinilover.geometry.coordinate.Box] = List(Box(Point(6,11),Point(9,19)), Box(Point(15,11),Point(17,19)), Box(Point(0,0),Point(17,3)), Box(Point(0,9),Point(3,14)), Box(Point(13,11),Point(15,19)), Box(Point(9,11),Point(13,19)), Box(Point(3,11),Point(6,19)), Box(Point(0,14),Point(3,19)))
 
 scala> calculateRemainedSpace(page)(boxes: _*)
-res0: Option[org.jinilover.geometry.coordinate.Polygon] = Some(Polygon(List(Point(3,11), Point(17,11), Point(17,3), Point(0,3), Point(0,9), Point(3,9))))
-
+res0: List[org.jinilover.geometry.coordinate.Polygon] = List(Polygon(List(Point(3,11), Point(17,11), Point(17,3), Point(0,3), Point(0,9), Point(3,9))))
 ```
+
 To simulate the diagram 2, under the REPL, type the following command
 ```Scala
+scala> val page = Box((0, 0), (17, 19))
+page: org.jinilover.geometry.coordinate.Box = Box(Point(0,0),Point(17,19))
+
 scala> val boxes = List(
      |         Box((15, 7), (16, 19)), Box((0, 0), (17, 3)),
      |         Box((4, 9), (8, 19)), Box((0, 9), (4, 14)),
@@ -56,9 +64,27 @@ scala> val boxes = List(
 boxes: List[org.jinilover.geometry.coordinate.Box] = List(Box(Point(15,7),Point(16,19)), Box(Point(0,0),Point(17,3)), Box(Point(4,9),Point(8,19)), Box(Point(0,9),Point(4,14)), Box(Point(8,7),Point(11,19)), Box(Point(16,3),Point(17,19)), Box(Point(11,10),Point(15,19)), Box(Point(0,14),Point(4,19)))
 
 scala> calculateRemainedSpace(page)(boxes: _*)
-res1: Option[org.jinilover.geometry.coordinate.Polygon] = Some(Polygon(List(Point(11,10), Point(15,10), Point(15,7), Point(16,7), Point(16,3), Point(0,3), Point(0,9), Point(8,9), Point(8,7), Point(11,7))))
+res1: List[org.jinilover.geometry.coordinate.Polygon] = List(Polygon(List(Point(11,10), Point(15,10), Point(15,7), Point(16,7), Point(16,3), Point(0,3), Point(0,9), Point(8,9), Point(8,7), Point(11,7))))
 ```
+
+To simulate the diagram 3, under the REPL, type the following command
+```Scala
+scala> val page = Box((3, 10), (13, 20))
+page: org.jinilover.geometry.coordinate.Box = Box(Point(3,10),Point(13,20))
+
+scala> val boxes = List(
+     |         Box((7, 10), (9, 14)), Box((3, 14), (7, 16)),
+     |         Box((7, 14), (9, 16)), Box((9, 14), (13, 16)),
+     |         Box((7, 16), (9, 20))
+     |       )
+boxes: List[org.jinilover.geometry.coordinate.Box] = List(Box(Point(7,10),Point(9,14)), Box(Point(3,14),Point(7,16)), Box(Point(7,14),Point(9,16)), Box(Point(9,14),Point(13,16)), Box(Point(7,16),Point(9,20)))
+
+scala> calculateRemainedSpace(page)(boxes: _*)
+res2: List[org.jinilover.geometry.coordinate.Polygon] = List(Polygon(List(Point(3,14), Point(7,14), Point(7,10), Point(3,10))), Polygon(List(Point(3,20), Point(7,20), Point(7,16), Point(3,16))), Polygon(List(Point(9,14), Point(13,14), Point(13,10), Point(9,10))), Polygon(List(Point(9,20), Point(13,20), Point(13,16), Point(9,16))))
+```
+There are 4 polygons found in the result list.
+
 Similar tests are performed in https://github.com/jinilover/coordinateGeometryInScala/blob/master/src/test/scala/org/jinilover/geometry/coordinate/CalculateReminedSpaceSpec.scala
 
 ##Mathematical analysis, development and testing
-Most of the time is spent on the graph book drawing the edges and polygon and writing test cases.  Mathemtical problem is a good domain for applying FP.  Since FP is used, the application is written in simpler and elegant way than using other programming paradigm.
+Most of the time is spent on the graph book drawing the edges and polygon and writing test cases.  Mathemtical problem is a good domain for applying FP.  Since FP is used, the application is written in simpler and elegant way than using other programming paradigm.  In the implementation, only basic FP features are used such as higher-order functions, Monad.  Scalaz is used in a few places only.
