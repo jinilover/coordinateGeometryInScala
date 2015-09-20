@@ -16,7 +16,7 @@ There can be more than one polygon remained after subtraction.  In the following
 ##Assumptions:
 * The blue rectangles do not form a polygon having a hole.
 * The blue rectangles are inside the outermost rectangle.
-* Each blue rectangle has at least 1 edge attaching to the outermost rectangle's edges.
+* Similar to the blue rectangles, the yellow polygon(s) does/do not have a hole.
 * There is no overlapping between the blue rectangles
 
 ##Coordinates setting
