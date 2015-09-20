@@ -5,15 +5,13 @@ This is a common coordinate geometry problem be solved in publishing.  The purpo
 
 E.g. in the above diagram, it aims to find the co-ordinates of the 6 vertices of the yellow region.  The algorithm is given the outermost rectangle topLeft/bottomRight coordinates and the 8 rectangle topLeft/bottomRight coordinates.  The numbers represent the input order the blue rectangles provided to the algorithm.  This implies the sequence of the rectangles is provided in a random order.  The algorithm needs to "subtract" the blue rectangles from the outermost rectangle to calculate the 6 vertices of the yellow region.
 
-Here is another example.  
+Here is another example.  The algorithm needs to find the co-ordinates of the 10 vertices of the yellow polygon.
 
 ![Alt text](https://github.com/jinilover/images/blob/master/Polygon2.png)  
 
-This time the algorithm needs to find the co-ordinates of the 10 vertices of the yellow polygon.
+There can be more than one polygon remained after subtraction.  In the following diagram, it calculates the 4 vertices of the 4 yellow polygons.
 
 ![Alt text](https://github.com/jinilover/images/blob/master/Polygon3.png)  
-
-There can be more than one polygon remained after subtraction.  In the above diagram, it calculates the 4 vertices of the 4 yellow polygons.
 
 ##Assumptions:
 * The blue rectangles do not form a polygon having a hole.
