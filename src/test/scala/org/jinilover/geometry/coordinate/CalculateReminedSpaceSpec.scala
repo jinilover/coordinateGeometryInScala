@@ -50,7 +50,7 @@ class CalculateReminedSpaceSpec extends Properties("Calculate remained space alg
       ))
     } {
       boxes => calculateRemainedSpace(box)(boxes: _*).toSet ==
-        List(
+        Set(
           Polygon(
             (5, 18), (13, 18), (13, 15), (7, 15),
             (7, 10), (5, 10)
@@ -58,7 +58,7 @@ class CalculateReminedSpaceSpec extends Properties("Calculate remained space alg
           Polygon(
             (9, 13), (13, 13), (13, 10), (9, 10)
           )
-        ).toSet
+        )
     }
 
   property("subtract 4 boxes on each corner, form a cross") =
@@ -88,10 +88,10 @@ class CalculateReminedSpaceSpec extends Properties("Calculate remained space alg
       ))
     } {
       boxes => calculateRemainedSpace(box)(boxes: _*).toSet ==
-        (List(
+        (Set(
           Box((3, 10), (7, 14)), Box((3, 16), (7, 20)),
           Box((9, 16), (13, 20)), Box((9, 10), (13, 14))
-        ): List[Polygon]).toSet
+        ): Set[Polygon])
     }
 
   property("subtract the same size polygon, return None") =
