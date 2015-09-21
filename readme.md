@@ -84,5 +84,5 @@ There are 4 polygons found in the result list.
 
 Similar tests are performed in https://github.com/jinilover/coordinateGeometryInScala/blob/master/src/test/scala/org/jinilover/geometry/coordinate/CalculateReminedSpaceSpec.scala
 
-##Mathematical analysis, development and testing
-Mathemtical problem is a good domain for applying FP.  Since FP is used, the application is written in a simpler and more elegant way than using other programming paradigm.  Therefore in developing this application, implementation takes the least time.  Most of the time is spent on mathematical analysis, i.e. using the graph book to draw various edges and polygons, and writing test cases.  In the implementation, only basic FP features are used such as higher-order functions, Monad.  Scalaz is used in a few places only.
+##Analysis, development and testing
+This problem can be solved by using different programming paradigms.  Adopting FP makes the application simpler and more elegant than using other programming paradigm.  Therefore in developing this application, implementation takes the least time.  Most of the time is spent on analyzing the problem and writing test cases.  In the implementation, only basic FP features are used such as higher-order functions, Monad.  Scalaz is used in a few places only.
