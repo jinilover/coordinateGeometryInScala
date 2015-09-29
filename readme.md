@@ -7,11 +7,11 @@ E.g. in the above diagram, it aims to find the co-ordinates of the 6 vertices of
 
 Here is another example.  The algorithm needs to find the co-ordinates of the 10 vertices of the yellow polygon.
 
-![Alt text](https://github.com/jinilover/images/blob/master/Polygon2.png)  
+![Alt text](https://github.com/jinilover/images/blob/master/Polygon2.png)
 
 There can be more than one polygon remained after subtraction.  In the following diagram, it calculates the 4 vertices of the 4 yellow polygons.
 
-![Alt text](https://github.com/jinilover/images/blob/master/Polygon3.png)  
+![Alt text](https://github.com/jinilover/images/blob/master/Polygon3.png)
 
 ##Assumptions:
 * The blue rectangles do not form a polygon having a hole.
@@ -20,7 +20,7 @@ There can be more than one polygon remained after subtraction.  In the following
 * There is no overlapping between the blue rectangles
 
 ##Coordinates setting
-* The top left coordinates is (0, 0).  
+* The top left coordinates is (0, 0).
 * The polygon vertices are presented in a list of (x, y), counter clockwise manner.  The first vertice is the left end of the bottom horizontal line.  E.g. in the first diagram, the yellow region vertices are (3, 11), (17, 11), (17, 3), (0, 3), (0, 9), (3, 9).
 * A rectangle vertices are presented by topLeft and bottomRight corner.  E.g. in the first diagram, the blue rectangle #3 vertices are presented as (0, 0), (17, 3).
 
@@ -85,4 +85,4 @@ There are 4 polygons found in the result list.
 Similar tests are performed in https://github.com/jinilover/coordinateGeometryInScala/blob/master/src/test/scala/org/jinilover/geometry/coordinate/CalculateReminedSpaceSpec.scala
 
 ##Analysis, development and testing
-This problem can be solved by using different programming paradigms.  Adopting FP makes the application simpler, more elegant and easier to be maintained.  This minimizes the time in implementation.  Most of the time is spent on analyzing the problem and writing test cases.  In the implementation, essential FP features are used such as higher-order functions, functional composition and Monad.  Scalaz is used in a few places to save the time from writing some functional patterns from scratch.
+This algorithm can be implemented using different programming paradigms.  Adopting FP makes the application simpler, more elegant and easier to be maintained.  This minimizes the time in implementation.  In this application, most of the time is spent on analyzing the problem and writing test cases.  In the implementation, essential FP features are used such as higher-order functions, functional composition and Monad.  Scalaz is used in a few places to save the time from writing some functional patterns from scratch.
