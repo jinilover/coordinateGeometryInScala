@@ -4,13 +4,14 @@ import org.scalacheck.Gen
 
 object Generator {
   def randomList[T](items: List[T]): Gen[List[T]] =
-    items.foldLeft(Gen.const(Nil: List[T])) {
-      (genBoxes, b) =>
+    items match {
+      case Nil => Gen.const(List.empty[T])
+      case _ =>
         for {
-          bs <- genBoxes
-          availBs = items diff bs
-          n <- Gen.choose(0, availBs.size - 1)
-        } yield availBs(n) :: bs
+          n <- Gen.choose(0, items.size - 1)
+          (lead, _ :: trail) = items splitAt n
+          randomTail <- randomList(lead ::: trail)
+        } yield items(n) :: randomTail
     }
 
 }
