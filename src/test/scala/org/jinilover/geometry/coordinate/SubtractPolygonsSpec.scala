@@ -15,7 +15,7 @@ class SubtractPolygonsSpec extends Properties("Calculate remained space algorith
     forAll {
       randomList(List(
         Box((3, 11), (7, 14)), Box((10, 15), (13, 18))
-      ): List[Polygon])
+      ): POLYGONS)
     } {
       polys => subtract(box)(polys: _*) ==
         List(
@@ -71,7 +71,7 @@ class SubtractPolygonsSpec extends Properties("Calculate remained space algorith
       randomList(List(
         Box((3, 10), (7, 14)), Box((3, 16), (7, 20)),
         Box((9, 16), (13, 20)), Box((9, 10), (13, 14))
-      ): List[Polygon])
+      ): POLYGONS)
     } {
       polys => subtract(box)(polys: _*) ==
         List(
@@ -103,7 +103,7 @@ class SubtractPolygonsSpec extends Properties("Calculate remained space algorith
 
   property("subtract the same size polygon, return None") =
     forAll {
-      randomList(List(box): List[Polygon])
+      randomList(List(box): POLYGONS)
     } {
       polys => subtract(box)(polys: _*) == Nil
     }
@@ -116,7 +116,7 @@ class SubtractPolygonsSpec extends Properties("Calculate remained space algorith
           (7, 20), (13, 20), (13, 10), (3, 10),
           (3, 12), (11, 12), (11, 18), (7, 18)
         )
-      ): List[Polygon])
+      ): POLYGONS)
     } {
       polys => subtract(box)(polys: _*) ==
         List(

@@ -5,7 +5,7 @@ import EdgeFuncs._
 import com.typesafe.scalalogging.LazyLogging
 
 object GeometryFuncs extends LazyLogging {
-  def unite(boxes: Box*): List[Polygon] = {
+  def unite(boxes: Box*): POLYGONS = {
     import scalaz.std.option.optionLast
     import scalaz.std.list._
     import scalaz.std.tuple._
@@ -40,7 +40,7 @@ object GeometryFuncs extends LazyLogging {
     }
   }
 
-  def subtract(box: Box)(polySeq: Polygon*): List[Polygon] = {
+  def subtract(box: Box)(polySeq: Polygon*): POLYGONS = {
     val polys = polySeq.toList
     polys match {
       case Nil => Nil
@@ -77,7 +77,7 @@ object GeometryFuncs extends LazyLogging {
    * Entry point to this coordinate geometry application
    * Calculate the coordinate of the remaining space by subtracting boxes from bigBox
    */
-  def calculateRemainedSpace(bigBox: Box)(boxes: Box*): List[Polygon] =
+  def calculateRemainedSpace(bigBox: Box)(boxes: Box*): POLYGONS =
     subtract(bigBox)(unite(boxes: _*): _*)
 
 }
