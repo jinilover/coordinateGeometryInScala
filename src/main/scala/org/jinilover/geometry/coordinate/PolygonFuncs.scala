@@ -96,9 +96,8 @@ object PolygonFuncs extends LazyLogging {
       val pEdges = polygonToEdges(polygon)
       val bEdges = polygonToEdges(box)
       overlapEdges(pEdges)(bEdges) flatMap {
-        t =>
-          val (pMatches, bMatches) = t
-          lazy val toPolygon = formPolygon(pEdges)(pMatches)(bEdges)(bMatches)
+        case (pMatches, bMatches) =>
+          val toPolygon = formPolygon(pEdges)(pMatches)(bEdges)(bMatches)
           bMatches.size match {
             case 1 => toPolygon(joinBy1or2Matches)
             case 2 => toPolygon(joinBy1or2Matches)
