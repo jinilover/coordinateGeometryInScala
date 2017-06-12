@@ -1,4 +1,4 @@
-#Coordinate geometry problem
+# Coordinate geometry problem
 This is a common coordinate geometry problem be solved in publishing.  The purpose is to find the co-ordinates of a polygon's vertices.
 
 ![Alt text](https://github.com/jinilover/images/blob/master/Polygon1.png)
@@ -13,18 +13,18 @@ There can be more than one polygon remained after subtraction.  In the following
 
 ![Alt text](https://github.com/jinilover/images/blob/master/Polygon3.png)
 
-##Assumptions:
+## Assumptions:
 * The blue rectangles do not form a polygon having a hole.
 * The blue rectangles are inside the outermost rectangle.
 * Similar to the blue rectangles, the yellow polygon(s) does/do not have a hole.
 * There is no overlapping between the blue rectangles
 
-##Coordinates setting
+## Coordinates setting
 * The top left coordinates is (0, 0).
 * The polygon vertices are presented in a list of (x, y), counter clockwise manner.  The first vertice is the left end of the bottom horizontal line.  E.g. in the first diagram, the yellow region vertices are (3, 11), (17, 11), (17, 3), (0, 3), (0, 9), (3, 9).
 * A rectangle vertices are presented by topLeft and bottomRight corner.  E.g. in the first diagram, the blue rectangle #3 vertices are presented as (0, 0), (17, 3).
 
-##API usage
+## API usage
 To simulate the diagram 1, under the REPL, type the following command
 ```Scala
 scala> import org.jinilover.geometry.coordinate._
@@ -84,5 +84,5 @@ There are 4 polygons found in the result list.
 
 Similar tests are performed in https://github.com/jinilover/coordinateGeometryInScala/blob/master/src/test/scala/org/jinilover/geometry/coordinate/CalculateReminedSpaceSpec.scala
 
-##Analysis, development and testing
+## Analysis, development and testing
 This algorithm can be implemented using different programming paradigms.  Adopting FP makes the application simpler, more elegant and easier to be maintained.  This minimizes the time in implementation.  In this application, most of the time is spent on analyzing the problem and writing test cases.  In the implementation, essential FP features are used such as higher-order functions, functional composition and Monad.  Scalaz is used in a few places to save the time from writing some functional patterns from scratch.
